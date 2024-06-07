@@ -1,0 +1,241 @@
+## Azure login
+az login
+az account list -o table
+
+## 구독 지정
+# subscriptionId='9038eb5a-8bbe-479e-a36d-35c0273b6a8d' # iot.releng
+# subscriptionId='d9d7ba9c-6930-4758-a3de-2f2bb48756bf' # iot.dev
+subscriptionId='4a14435c-14b8-42fa-99b5-3d513b52fc23' # multicloud enabling
+az account set -s $subscriptionId
+
+
+# azure resource group 확인
+az group list --output table
+
+# RESOURCE_GROUP='network-na13d'
+# RESOURCE_GROUP='aks-na13d'
+# RESOURCE_GROUP='aks2-na13d-cluster'
+RESOURCE_GROUP='01_dustinAksRg_1'
+az group show --name $RESOURCE_GROUP
+
+
+# azure resource 확인 (특정 resource group 에 속한)
+az resource list --resource-group $RESOURCE_GROUP --output table
+
+
+#### TASK 01. AKS 리소스 그룹 생성하기 ####
+# 리소스 그룹 생성
+RESOURCE_GROUP='01_dustinAksRg_1'
+LOCATION='koreacentral'
+az group create -n $RESOURCE_GROUP -l $LOCATION
+#az group update --resource-group $RESOURCE_GROUP --set tags.CostCenter='{"Dept":"IT","Environment":"Test"}'
+
+
+# Provider register 목록확인 (리소스 공급자가 등록되어 있어야 함)
+az provider list --query "[?registrationState=='Registered'].{Provider:namespace, Status:registrationState}" --out table
+az provider list --out table
+
+
+# Provider register 등록
+az provider register -n Microsoft.OperationsManagement
+az provider register -n Microsoft.OperationalInsights
+az provider register -n Microsoft.ContainerService
+az provider register -n Microsoft.ContainerRegistry
+
+###############################
+######## VNET ########
+
+# Network Security Group (NSG) 생성
+NSG1='dustinNSG1'
+NSG2='dustinNSG2'
+NSG3='dustinNSG3'
+az network nsg create --resource-group $RESOURCE_GROUP --name $NSG1 --location $LOCATION
+az network nsg create --resource-group $RESOURCE_GROUP --name $NSG2 --location $LOCATION
+az network nsg create --resource-group $RESOURCE_GROUP --name $NSG3 --location $LOCATION
+
+# Vnet 및 public subnet 생성
+VNET_NAME='dustinVnet_ap01'
+PUB_SUB_NET1='PublicSubnet1'
+az network vnet create \
+  --resource-group $RESOURCE_GROUP \
+  --name $VNET_NAME \
+  --address-prefix 10.0.0.0/16 \
+  --location $LOCATION \
+  --subnet-name $PUB_SUB_NET1 \
+  --subnet-prefix 10.0.1.0/24 \
+  --network-security-group $NSG1
+
+
+
+# Subnet 구성 (AG용, Ingress용, PrivateLinkd용, DB용) 
+# - https://learn.microsoft.com/ko-kr/azure/architecture/reference-architectures/containers/aks/baseline-aks
+# - https://learn.microsoft.com/ko-kr/azure/architecture/reference-architectures/containers/aks-multi-region/aks-multi-cluster
+
+# Private Subnet 생성 및 NSG 적용
+PRIV_SUB_NET1='PrivateSubnet1'
+PRIV_SUB_NET2='PrivateSubnet2'
+
+# az network vnet subnet create \
+#   --resource-group $RESOURCE_GROUP \
+#   --vnet-name $VNET_NAME \
+#   --name $PUB_SUB_NET1 \
+#   --address-prefix 10.0.1.0/24 \
+#   --network-security-group nsg1
+
+az network vnet subnet create \
+  --resource-group $RESOURCE_GROUP \
+  --vnet-name $VNET_NAME \
+  --name $PRIV_SUB_NET1 \
+  --address-prefix 10.0.2.0/24 \
+  --network-security-group $NSG2
+
+az network vnet subnet create \
+  --resource-group $RESOURCE_GROUP \
+  --vnet-name $VNET_NAME \
+  --name $PRIV_SUB_NET2 \
+  --address-prefix 10.0.3.0/24 \
+  --network-security-group $NSG3
+  
+###############################
+###### NAT Gateway 생성 ########
+
+# Public IP 생성
+PUBLIC_IP_NAME='NATGWpubIP'
+az network public-ip create \
+  --resource-group $RESOURCE_GROUP \
+  --name $PUBLIC_IP_NAME \
+  --sku Standard \
+  --location $LOCATION \
+  --zone 1 2 3
+
+
+# NAT Gateway 생성
+NAT_GW_NAME='dustinNatGW_01'
+az network nat gateway create \
+  --resource-group $RESOURCE_GROUP \
+  --name $NAT_GW_NAME \
+  --location $LOCATION \
+  --public-ip-addresses $PUBLIC_IP_NAME \
+  --idle-timeout 10
+
+
+# Public Subnet 에 NAT Gateway 연결
+az network vnet subnet update \
+  --resource-group $RESOURCE_GROUP \
+  --vnet-name $VNET_NAME \
+  --name $PUB_SUB_NET1 \
+  --nat-gateway $NAT_GW_NAME
+
+
+az network nat gateway show --resource-group $RESOURCE_GROUP --name $NAT_GW_NAME
+
+
+###############################
+######## ACR ########
+
+# Azure Container Registry 생성
+ACR_NAME='dustinacr01'
+az acr create -g $RESOURCE_GROUP -n $ACR_NAME \
+  --sku Basic --admin-enabled true
+
+
+# ACR 자격 증명 가져오기
+ACR_PASSWORD=$(az acr credential show -n $ACR_NAME \
+  --query "passwords[0].value" -o tsv)
+
+LOGIN_SERVER=$(az acr show -n $ACR_NAME \
+  --query LOGIN_SERVER -o tsv)
+
+
+az acr repository list -n $ACR_NAME
+
+
+###############################
+######## AKS ########
+# 변수 설정
+RESOURCE_GROUP='01_dustinAksRg_1'
+AKS_CLUSTER_NAME="dustinAKScluster01"
+VNET_NAME='dustinVnet_ap01'
+SUBNET_NAME=$PRIV_SUB_NET1
+LOCATION='koreacentral'
+NODE_COUNT=3
+
+
+# AKS Cluster 생성
+AKS_CLUSTER_NAME='dustinaks_ap01'
+az aks create \
+    --resource-group $RESOURCE_GROUP \
+    --name $AKS_CLUSTER_NAME \
+    --node-count $NODE_COUNT \
+    --enable-addons monitoring \
+    --generate-ssh-keys \
+    -s Standard_D2_v4
+
+az aks list -o table
+
+# AKS 클러스터 연결
+az aks get-credentials -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME
+
+
+az aks show -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME --query "networkProfile.vnetSubnetId" -o tsv
+
+az network vnet list
+
+# 리소스 그룹의 모든 vnet 확인
+az network vnet list -g $RESOURCE_GROUP
+
+
+
+
+
+
+
+
+
+
+
+# Azure Container Registry 만들기
+ACR_NAME='01dustinacr'
+az acr create -g $RESOURCE_GROUP -n $ACR_NAME \
+  --sku Basic --admin-enabled true
+
+
+# ACR 자격 증명 가져오기
+ACR_PASSWORD=$(az acr credential show -n $ACR_NAME \
+  --query "passwords[0].value" -o tsv)
+
+LOGIN_SERVER=$(az acr show -n $ACR_NAME \
+  --query LOGIN_SERVER -o tsv)
+
+
+
+# Dockerfile에서 ACR로 이미지 빌드 및 푸시
+# image="myweb:1.0"
+# az acr build --image $image --registry $ACR_NAME \
+#   --file Dockerfile .
+
+# ACR 이미지 확인
+az acr repository list -n $ACR_NAME -o table
+
+# ACR에 푸시한 이미지 실행
+# az acr run -r $ACR_NAME --cmd 'docker run -d $Registry/myweb:1.0' /dev/null
+
+# ACR 이미지로 컨테이너 만들기
+# containerGroupName="aci-acr"
+# imageTag="$LOGIN_SERVER/$image"
+# az container create -g $RESOURCE_GROUP -n $containerGroupName \
+#   --image $imageTag --cpu 1 --memory 1 \
+#   --registry-username $ACR_NAME \
+#   --registry-password $ACR_PASSWORD \
+#   --dns-name-label "[ACI_NAME]" --ports 80 \
+#   --no-wait
+
+# 컨테이너 인스턴스의 URL 가져오기
+# az container show -g $RESOURCE_GROUP -n $containerGroupName \
+#   --query ipAddress.fqdn -o tsv
+
+
+
+
+# 리소스 그룹 삭제
+az group delete -n $RESOURCE_GROUP --no-wait --yes
