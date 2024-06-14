@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: alpine-pod1
+spec:
+  containers:
+  - name: alpine1
+    image: alpine
+    command: ["/bin/sh", "-c", "sleep infinity"]
+  nodeSelector:
+    agentpool: nodepool1
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: alpine-pod2
+spec:
+  containers:
+  - name: alpine2
+    image: alpine
+    command: ["/bin/sh", "-c", "sleep infinity"]
+  nodeSelector:
+    agentpool: nodepool02
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: alpine-pod3
+spec:
+  containers:
+  - name: alpine3
+    image: alpine
+    command: ["/bin/sh", "-c", "sleep infinity"]
+  nodeSelector:
+    agentpool: nodepool03

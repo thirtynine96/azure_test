@@ -1,4 +1,6 @@
-## Azure login
+########################################################
+# Azure login
+########################################################
 az login
 az account list -o table
 
@@ -16,14 +18,15 @@ az group list --output table
 # RESOURCE_GROUP='aks-na13d'
 # RESOURCE_GROUP='aks2-na13d-cluster'
 RESOURCE_GROUP='01_dustinAksRg_1'
-az group show --name $RESOURCE_GROUP
+az group show --name $RESOURCE_GROUP --output table
 
 ##### 제일 많이 사용 ####
 # azure resource 확인 (특정 resource group 에 속한)
 az resource list --resource-group $RESOURCE_GROUP --output table
 
-
-#### TASK 01. AKS 리소스 그룹 생성하기 ####
+########################################################
+# AKS 리소스 그룹 생성하기
+########################################################
 # 리소스 그룹 생성
 RESOURCE_GROUP='01_dustinAksRg_1'
 LOCATION='koreacentral'
@@ -42,16 +45,22 @@ az provider register -n Microsoft.OperationalInsights
 az provider register -n Microsoft.ContainerService
 az provider register -n Microsoft.ContainerRegistry
 
-###############################
-######## VNET ########
+# 리소스 그룹 삭제
+az group delete -n $RESOURCE_GROUP --no-wait --yes
+
+########################################################
+# VNET 생성 / NSG 생성
+########################################################
 
 # Network Security Group (NSG) 생성
 NSG1='dustinNSG1'
 NSG2='dustinNSG2'
 NSG3='dustinNSG3'
+NSG4='dustinNSG4'
 az network nsg create --resource-group $RESOURCE_GROUP --name $NSG1 --location $LOCATION
 az network nsg create --resource-group $RESOURCE_GROUP --name $NSG2 --location $LOCATION
 az network nsg create --resource-group $RESOURCE_GROUP --name $NSG3 --location $LOCATION
+az network nsg create --resource-group $RESOURCE_GROUP --name $NSG4 --location $LOCATION
 
 # Vnet 및 public subnet 생성
 VNET_NAME='dustinVnet_ap01'
@@ -59,7 +68,7 @@ PUB_SUB_NET1='PublicSubnet1'
 az network vnet create \
   --resource-group $RESOURCE_GROUP \
   --name $VNET_NAME \
-  --address-prefix 10.30.0.0/8 \
+  --address-prefix 10.30.0.0/16 \
   --location $LOCATION \
   --subnet-name $PUB_SUB_NET1 \
   --subnet-prefix 10.30.1.0/24 \
@@ -78,21 +87,20 @@ az network vnet subnet show --resource-group $RESOURCE_GROUP --vnet-name $VNET_N
 # Vnet 삭제
 az network vnet delete --resource-group $RESOURCE_GROUP --name $VNET_NAME
 
+# 리소스 그룹의 모든 vnet 확인
+az network vnet list
+az network vnet list -g $RESOURCE_GROUP
 
+########################################################
 # Subnet 구성 (AG용, Ingress용, PrivateLinkd용, DB용) 
+########################################################
 # - https://learn.microsoft.com/ko-kr/azure/architecture/reference-architectures/containers/aks/baseline-aks
 # - https://learn.microsoft.com/ko-kr/azure/architecture/reference-architectures/containers/aks-multi-region/aks-multi-cluster
 
 # Private Subnet 생성 및 NSG 적용
 PRIV_SUB_NET1='PrivateSubnet1'  # node subnet
-PRIV_SUB_NET2='PrivateSubnet2'  # pod subnet
-
-# az network vnet subnet create \
-#   --resource-group $RESOURCE_GROUP \
-#   --vnet-name $VNET_NAME \
-#   --name $PUB_SUB_NET1 \
-#   --address-prefix 10.0.1.0/24 \
-#   --network-security-group nsg1
+PRIV_SUB_NET2='PrivateSubnet2'  # pod subnet (nodepool1)
+PRIV_SUB_NET3='PrivateSubnet3'  # pod subnet (nodepool2)
 
 az network vnet subnet create \
   --resource-group $RESOURCE_GROUP \
@@ -108,20 +116,29 @@ az network vnet subnet create \
   --address-prefix 10.30.3.0/24 \
   --network-security-group $NSG3
   
+
+az network vnet subnet create \
+  --resource-group $RESOURCE_GROUP \
+  --vnet-name $VNET_NAME \
+  --name $PRIV_SUB_NET3 \
+  --address-prefix 10.30.4.0/24 \
+  --network-security-group $NSG4
+
 # 생성한 Subnet 확인
-az network vnet subnet show --resource-group $RESOURCE_GROUP --name $PRIV_SUB_NET1 --vnet-name $VNET_NAME 
+az network vnet subnet show --resource-group $RESOURCE_GROUP --name $PRIV_SUB_NET1 --vnet-name $VNET_NAME
 az network vnet subnet show --resource-group $RESOURCE_GROUP --name $PRIV_SUB_NET2 --vnet-name $VNET_NAME
 
-# Subnet 목록 확인
-az network vnet subnet list --resource-group $RESOURCE_GROUP --vnet-name $VNET_NAME
+# Subnet list 목록 확인
+az network vnet subnet list --resource-group $RESOURCE_GROUP --vnet-name $VNET_NAME --output table
 
 # Subnet 삭제
 az network vnet subnet delete --name $PRIV_SUB_NET1 --resource-group $RESOURCE_GROUP --vnet-name $VNET_NAME
 az network vnet subnet delete --name $PRIV_SUB_NET1 --resource-group $RESOURCE_GROUP --vnet-name $VNET_NAME
 az network vnet subnet delete --name $PRIV_SUB_NET2 --resource-group $RESOURCE_GROUP --vnet-name $VNET_NAME
 
-###############################
-###### NAT Gateway 생성 ########
+########################################################
+# NAT Gateway 생성 / Public IP 생성
+########################################################
 
 # Public IP 생성
 PUBLIC_IP_NAME='NATGWpubIP'
@@ -131,7 +148,6 @@ az network public-ip create \
   --sku Standard \
   --location $LOCATION \
   --zone 1 2 3
-
 
 # NAT Gateway 생성
 NAT_GW_NAME='dustinNatGW_01'
@@ -150,13 +166,13 @@ az network vnet subnet update \
   --name $PUB_SUB_NET1 \
   --nat-gateway $NAT_GW_NAME
 
-
+# NAT GW 확인
 az network nat gateway show --resource-group $RESOURCE_GROUP --name $NAT_GW_NAME
 
 
-###############################
-######## ACR ########
-
+########################################################
+# ACR 생성 
+########################################################
 # Azure Container Registry 생성
 ACR_NAME='dustinacr01'
 az acr create -g $RESOURCE_GROUP -n $ACR_NAME \
@@ -179,8 +195,9 @@ az acr show --name $ACR_NAME --query loginServer
 az acr repository list -n $ACR_NAME
 
 
-###############################
-######## AKS ########
+########################################################
+# AKS 생성 
+########################################################
 # 변수 설정 for aks ap01
 RESOURCE_GROUP='01_dustinAksRg_1'
 AKS_CLUSTER_NAME='dustinaks_cluster_ap01'
@@ -194,14 +211,6 @@ MAX_PODS=250
 
 
 # AKS Cluster ap01 생성
-# az aks create \
-#     --resource-group $RESOURCE_GROUP \
-#     --name $AKS_CLUSTER_NAME \
-#     --node-count $NODE_COUNT \
-#     --enable-addons monitoring \
-#     --generate-ssh-keys \
-#     -s Standard_D2_v4
-
 az aks create \
     --name $AKS_CLUSTER_NAME \
     --resource-group $RESOURCE_GROUP \
@@ -215,45 +224,16 @@ az aks create \
     --generate-ssh-keys
 
 
-az aks list -o table
-
-
-
-# 변수 설정 for aks ap02
-RESOURCE_GROUP='01_dustinAksRg_1'
-AKS_CLUSTER_NAME="dustinaks_ap02"
-VNET_NAME='dustinVnet_ap01'
-SUBNET_NAME=$PRIV_SUB_NET2
-LOCATION='koreacentral'
-NODE_COUNT=4
+# AKS 목록 확인
+az aks list --resource-group $RESOURCE_GROUP -o table
 
 
 # 서브넷 ID 가져오기
-SUBNET_ID=$(az network vnet subnet show \
-  --resource-group $RESOURCE_GROUP \
-  --vnet-name $VNET_NAME \
-  --name $SUBNET_NAME \
-  --query id -o tsv)
-
-
-# AKS Cluster ap02 생성
-az aks create \
-    --resource-group $RESOURCE_GROUP \
-    --name $AKS_CLUSTER_NAME \
-    --node-count $NODE_COUNT \
-    --network-plugin azure
-    --enable-addons monitoring \
-    --vnet-subnet-id $SUBNET_NAME
-    --generate-ssh-keys \
-    -s Standard_D2_v4
-
-
-# AKS Cluster 삭제
-az aks delete --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME --yes --no-wait
-
-
-# https://learn.microsoft.com/en-us/azure/aks/create-node-pools#add-a-node-pool-with-a-unique-subnet  (노드풀을 subnet 에 추가?)
-
+# SUBNET_ID=$(az network vnet subnet show \
+#   --resource-group $RESOURCE_GROUP \
+#   --vnet-name $VNET_NAME \
+#   --name $SUBNET_NAME \
+#   --query id -o tsv)
 
 # AKS 클러스터 연결 (k9s, kubectl 사용가능하게 됨.)
 az aks get-credentials -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME
@@ -261,18 +241,80 @@ az aks get-credentials -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME
 az aks show -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME --query "networkProfile.vnetSubnetId" -o tsv
 
 
+# AKS Cluster 삭제
+az aks delete --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME --yes --no-wait
+
+########################################################
+# AKS 클러스터에 신규 Node Pool 을 추가하기
+########################################################
+# - https://learn.microsoft.com/en-us/azure/aks/create-node-pools#add-a-node-pool-with-a-unique-subnet  (노드풀을 subnet 에 추가?)
+
+# 변수 설정
+RESOURCE_GROUP='01_dustinAksRg_1'
+AKS_CLUSTER_NAME='dustinaks_cluster_ap01'
+NODE_POOL_NAME='nodepool02'
+SUBNET_NAME_POD=$PRIV_SUB_NET2
+#SUBNET_RESOURCE_ID="/subscriptions/$SUBSCRIPTION/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Network/virtualNetworks/$VNET_NAME/subnets/$SUBNET_NAME_POD"
+
+# Node Pool (노드 풀) 추가 명령어 실행 (기존 pod subnet 에 추가했음.)
+az aks nodepool add \
+    --resource-group $RESOURCE_GROUP \
+    --cluster-name $AKS_CLUSTER_NAME \
+    --name $NODE_POOL_NAME \
+    --node-count 4 \
+    --vnet-subnet-id /subscriptions/$SUBSCRIPTION/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Network/virtualNetworks/$VNET_NAME/subnets/$SUBNET_NAME_NODE \
+    --pod-subnet-id /subscriptions/$SUBSCRIPTION/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Network/virtualNetworks/$VNET_NAME/subnets/$SUBNET_NAME_POD \
+
+# 변수 설정
+RESOURCE_GROUP='01_dustinAksRg_1'
+AKS_CLUSTER_NAME='dustinaks_cluster_ap01'
+NODE_POOL_NAME='nodepool03'
+SUBNET_NAME_POD=$PRIV_SUB_NET3
+
+# Node Pool (노드 풀) 추가 명령어 실행 (신규 pod subnet 에 추가했음.)
+az aks nodepool add \
+    --resource-group $RESOURCE_GROUP \
+    --cluster-name $AKS_CLUSTER_NAME \
+    --name $NODE_POOL_NAME \
+    --node-count 2 \
+    --vnet-subnet-id /subscriptions/$SUBSCRIPTION/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Network/virtualNetworks/$VNET_NAME/subnets/$SUBNET_NAME_NODE \
+    --pod-subnet-id /subscriptions/$SUBSCRIPTION/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Network/virtualNetworks/$VNET_NAME/subnets/$SUBNET_NAME_POD
+
+# AKS Node pool 목록 확인
 az aks nodepool list --resource-group $RESOURCE_GROUP --cluster-name $AKS_CLUSTER_NAME -o table
 
+az aks nodepool list \
+--resource-group $RESOURCE_GROUP \
+--cluster-name $AKS_CLUSTER_NAME \
+--query "[].{Name:name, NodeCount:count, VMSize:vmSize, MaxPods:maxPods, Mode:mode, OsType:osType, ProvisioningState:provisioningState, SubnetId:subnetId, NodePublicIP:nodePublicIP}" -o table
 
 
-az network vnet list
-
-# 리소스 그룹의 모든 vnet 확인
-az network vnet list -g $RESOURCE_GROUP
-
-
+# AKS node pool 정보확인
+az aks nodepool show --cluster-name $AKS_CLUSTER_NAME \
+    --name $NODE_POOL_NAME \
+    --resource-group $RESOURCE_GROUP
 
 
+# AKS node pool 삭제
+az aks nodepool delete --resource-group $RESOURCE_GROUP --cluster-name $AKS_CLUSTER_NAME --name $NODE_POOL_NAME --no-wait
+
+########################################################
+# worker node IP 확인
+########################################################
+# Node Resource Group 확인
+NODE_RESOURCE_GROUP=$(az aks show --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME --query nodeResourceGroup -o tsv)
+
+# worker node List (목록) 확인
+az vmss list --resource-group $NODE_RESOURCE_GROUP --output table
+VMSS_NAME='aks-nodepool03-26136281-vmss'
+az vmss list-instances --resource-group $NODE_RESOURCE_GROUP --name <VMSS 이름> -o table
+az vmss list-instances --resource-group $NODE_RESOURCE_GROUP --name aks-nodepool03-26136281-vmss -o table
+
+# worker node IP 확인
+VMSS_NAME='aks-nodepool03-26136281-vmss'
+az vmss nic list --resource-group $NODE_RESOURCE_GROUP --vmss-name $VMSS_NAME -o table
+az vmss nic list --resource-group $NODE_RESOURCE_GROUP --vmss-name $VMSS_NAME -o table
+az vmss nic list --resource-group $NODE_RESOURCE_GROUP --vmss-name $VMSS_NAME --query '[].ipConfigurations[].privateIPAddress' -o table
 
 
 
@@ -323,5 +365,4 @@ az acr repository list -n $ACR_NAME -o table
 
 
 
-# 리소스 그룹 삭제
-az group delete -n $RESOURCE_GROUP --no-wait --yes
+
