@@ -171,7 +171,11 @@ az network nat gateway show --resource-group $RESOURCE_GROUP --name $NAT_GW_NAME
 
 
 ########################################################
-# ACR 생성 
+# ACR 생성
+########################################################
+# Ref. 
+# - https://microsoftlearning.github.io/AZ500-AzureSecurityTechnologies.ko-kr/Instructions/Labs/LAB_04_ConfiguringandSecuringACRandAKS.html
+##  This is mandantory link which you must see.
 ########################################################
 # Azure Container Registry 생성
 ACR_NAME='dustinacr01'
@@ -184,15 +188,82 @@ ACR_PASSWORD=$(az acr credential show -n $ACR_NAME \
   --query "passwords[0].value" -o tsv)
 
 LOGIN_SERVER=$(az acr show -n $ACR_NAME \
-  --query LOGIN_SERVER -o tsv)
+  --query loginServer -o tsv)
 
 # ACR 목록 확인
 az acr list --resource-group $RESOURCE_GROUP --output table
 
 # ACR 로그인 서버 확인
 az acr show --name $ACR_NAME --query loginServer
-
 az acr repository list -n $ACR_NAME
+
+
+########################################################
+# Container Image 생성 및 ACR 에 업로드
+# 1. Dockerfile 생성
+# 2. Container Image Build 
+# 3. ACR 에 Image upload
+########################################################
+# Ref.
+# - https://microsoftlearning.github.io/AZ500-AzureSecurityTechnologies.ko-kr/Instructions/Labs/LAB_04_ConfiguringandSecuringACRandAKS.html
+########################################################
+
+# index.html 파일 생성
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h1>Simple static website</h1>
+  <h2>Welcome to Azure Container Instances</h2>   
+</body>
+</html>
+
+# Dockerfile 작성
+FROM nginx:latest
+COPY ./index.html /usr/share/nginx/html/index.html
+
+# Dockerfile에서 ACR로 이미지 빌드 및 푸시 
+### 이 명령은 로컬에 docker 설치가 필요없음
+### . : 로컬 소스 디렉토리 경로 혹은 Git 리포지토리에 대한 URL임. 원격 tarball, Azure Container Registry 의 OCI 아티팩트 리포지토리를 지정할 수 있음.
+image="myweb:1.0"
+az acr build --image $image --registry $ACR_NAME \
+  --file Dockerfile_web .
+
+image="nginx:v1"
+az acr build --image $image --registry $ACR_NAME \
+  --file Dockerfile_nginx .
+
+# ACR 이미지 확인
+az acr repository list -n $ACR_NAME -o table
+
+# ACR 의 컨테이너 이미지 삭제
+az acr repository delete --name $ACR_NAME --image myweb:1.0
+az acr repository delete --name $ACR_NAME --image nginx:
+
+# ACR에 푸시한 이미지 실행
+az acr run -r $ACR_NAME --cmd 'docker run -d $Registry/myweb:1.0' /dev/null
+
+# ACR 이미지로 컨테이너 만들기
+# containerGroupName="aci-acr"
+# imageTag="$LOGIN_SERVER/$image"
+# az container create -g $RESOURCE_GROUP -n $containerGroupName \
+#   --image $imageTag --cpu 1 --memory 1 \
+#   --registry-username $ACR_NAME \
+#   --registry-password $ACR_PASSWORD \
+#   --dns-name-label "[ACI_NAME]" --ports 80 \
+#   --no-wait
+
+# 컨테이너 인스턴스의 URL 가져오기
+# az container show -g $RESOURCE_GROUP -n $containerGroupName \
+#   --query ipAddress.fqdn -o tsv
+
+########################################################
+# Docker Hub 에 있는 컨테이너 이미지를 ACR 로 복사하기 
+########################################################
+az acr import --name $ACR_NAME --source docker.io/library/nginx:latest --image nginx:v1
 
 
 ########################################################
@@ -245,9 +316,23 @@ az aks show -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME --query "networkProfile.vnet
 az aks delete --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME --yes --no-wait
 
 ########################################################
+# Private Cluster 생성하기
+# Ref.
+# - https://learn.microsoft.com/ko-kr/azure/aks/private-clusters?tabs=azure-porta
+########################################################
+
+# private subnet 에 worker node 를 구성했는데, 위 링크를 확인해야 할 필요가 있음.
+
+
+
+
+
+########################################################
 # AKS 클러스터에 신규 Node Pool 을 추가하기
 ########################################################
+# Ref.
 # - https://learn.microsoft.com/en-us/azure/aks/create-node-pools#add-a-node-pool-with-a-unique-subnet  (노드풀을 subnet 에 추가?)
+########################################################
 
 # 변수 설정
 RESOURCE_GROUP='01_dustinAksRg_1'
@@ -316,53 +401,44 @@ az vmss nic list --resource-group $NODE_RESOURCE_GROUP --vmss-name $VMSS_NAME -o
 az vmss nic list --resource-group $NODE_RESOURCE_GROUP --vmss-name $VMSS_NAME -o table
 az vmss nic list --resource-group $NODE_RESOURCE_GROUP --vmss-name $VMSS_NAME --query '[].ipConfigurations[].privateIPAddress' -o table
 
+# worker node 접근방법
+WORKER_NODE_NAME=aks-nodepool1-41486485-vmss000000
+kubectl node-shell $WORKER_NODE_NAME # 이거 쓰자
+kubectl debug node/$WORKER_NODE_NAME -it --image=mcr.microsoft.com/cbl-mariner/busybox:2.0
 
 
+########################################################
+# AKS 에 ACR 연결하기
+########################################################
+# Ref.
+# - https://learn.microsoft.com/ko-kr/azure/aks/cluster-container-registry-integration?tabs=azure-cli (Good)
+# - https://microsoftlearning.github.io/AZ500-AzureSecurityTechnologies.ko-kr/Instructions/Labs/LAB_04_ConfiguringandSecuringACRandAKS.html
+########################################################
+
+# ACR_NAME 가져오기
+ACR_NAME=$(az acr list --resource-group $RESOURCE_GROUP --query '[].{Name:name}' --output tsv)
+# AKS 에 ACR 연결
+az aks update --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME --attach-acr $ACR_NAME
 
 
+# AKS 에 ACR 접근을 위한 Role 할당 -> 이걸로 ImagePullBackOff 가 해결 안됨.
+AKS_VNET_ID=$(az network vnet show --name $VNET_NAME --resource-group $RESOURCE_GROUP --query id -o tsv)
+AKS_MANAGED_ID=$(az aks show --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP --query identity.principalId -o tsv)
+az role assignment create --assignee $AKS_MANAGED_ID --role "Contributor" --scope $AKS_VNET_ID
 
 
-# Azure Container Registry 만들기
-ACR_NAME='01dustinacr'
-az acr create -g $RESOURCE_GROUP -n $ACR_NAME \
-  --sku Basic --admin-enabled true
+az acr login -n dustinacr01 --expose-token
+# 실행결과
+# You can perform manual login using the provided access token below, for example: 'docker login loginServer -u 00000000-0000-0000-0000-000000000000 -p accessToken'
+# {
+#   "accessToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IklFTVI6TTdFRzpVV1JUOllIUEs6T1BZUTpZQjZNOjVUQ1M6S1RYRjpaQUhDOlZIRUw6RVVMUTo0SU1LIn0.eyJqdGkiOiI5M2MzNWJmNS0zMzEyLTQwYzktYTYyYS1kMGJkODIxMWIwZDQiLCJzdWIiOiJkc2J1cm4ua2ltQHRuc2Ftc3VuZy5jb20iLCJuYmYiOjE3MTg3OTc3ODgsImV4cCI6MTcxODgwOTQ4OCwiaWF0IjoxNzE4Nzk3Nzg4LCJpc3MiOiJBenVyZSBDb250YWluZXIgUmVnaXN0cnkiLCJhdWQiOiJkdXN0aW5hY3IwMS5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6ImU2MDgzZTEyMDUxMDQxNzc5ZjkyYTZiNTMwZjZjYjlkIiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjJkOTZiZDdiLTg4ODAtNDM3Yy04ZDIzLTZhMjQ4YTJkMzMyMyIsInBlcm1pc3Npb25zIjp7ImFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwibWV0YWRhdGEvcmVhZCIsIm1ldGFkYXRhL3dyaXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdfSwicm9sZXMiOltdfQ.kYuJfTbNKx0b78J0azdVWVhfHSJHBNlM9Qb2nbsG6F3FWsMhlAc-CF57wyc2xQxxiTkJ3Lyt5PloY0uAG3sIM-LOPUEy4MImZZE-M-fZ9rlmNZbyq3LhR_iEXFSLvBJz2H6eTL2jQNWNpovUx1OzKG2eLtqysV02iI7cvJMMLzLAquGvMvg_EE3W5G0pSnDT1v82djoqrRAYakuSMS6NcFTuy17qn7pS1oy0c0hO6OBfBPFTiqTqHeQAIDen1LGSG6ihmeOBRh3SIcpOaA_rwX0VQsJrSu2AJvZtm8EX6cxUD3egVsoGz7tCaw5I5vdWGGavOxt0MdRj_xjLNQXRGw",
+#   "loginServer": "dustinacr01.azurecr.io"
+# }
 
-
-# ACR 자격 증명 가져오기
-ACR_PASSWORD=$(az acr credential show -n $ACR_NAME \
-  --query "passwords[0].value" -o tsv)
-
-LOGIN_SERVER=$(az acr show -n $ACR_NAME \
-  --query LOGIN_SERVER -o tsv)
-
-
-
-# Dockerfile에서 ACR로 이미지 빌드 및 푸시
-# image="myweb:1.0"
-# az acr build --image $image --registry $ACR_NAME \
-#   --file Dockerfile .
-
-# ACR 이미지 확인
-az acr repository list -n $ACR_NAME -o table
-
-# ACR에 푸시한 이미지 실행
-# az acr run -r $ACR_NAME --cmd 'docker run -d $Registry/myweb:1.0' /dev/null
-
-# ACR 이미지로 컨테이너 만들기
-# containerGroupName="aci-acr"
-# imageTag="$LOGIN_SERVER/$image"
-# az container create -g $RESOURCE_GROUP -n $containerGroupName \
-#   --image $imageTag --cpu 1 --memory 1 \
-#   --registry-username $ACR_NAME \
-#   --registry-password $ACR_PASSWORD \
-#   --dns-name-label "[ACI_NAME]" --ports 80 \
-#   --no-wait
-
-# 컨테이너 인스턴스의 URL 가져오기
-# az container show -g $RESOURCE_GROUP -n $containerGroupName \
-#   --query ipAddress.fqdn -o tsv
-
-
-
-
-
+########################################################
+# ACR 이용해서 AKS 에 NGINX 배포 (Deployment)
+# Ref: https://kubernetes.io/docs/reference/kubectl/generated/kubectl_create/kubectl_create_deployment/#examples
+########################################################
+kubectl create deployment my-web --image dustinacr01.azurecr.io/myweb:1.0 --replicas=3
+또는
+kubectl apply -f yaml/arc-nginx.yaml
