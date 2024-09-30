@@ -1,0 +1,128 @@
+# azure_test
+
+
+# Namespace, Service 및 Deployment 배포
+```
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: alb-test-infra
+
+# ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-app-service
+  namespace: alb-test-infra
+spec:
+  selector:
+    app: web-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app-deployment
+  namespace: alb-test-infra
+  labels:
+    app: web-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      containers:
+      - name: web-app
+        image: nginx:1.19
+        ports:
+        - containerPort: 80
+
+# Service 의 target Port 를 마음대로 수정하면 안됨. 
+# 이것은 실제 pod 내부에서 컨테이너 형태로 실행된 application 이 사용하는 port 를 기입해야 함.!!!
+# containers 의 port 는 application 의 실제 port 로 셋팅하는 게 의미 있음.
+```
+
+```
+# NGIX URI 설정 (NGINX 서버의 아래 경로에 이 설정이 필요함.)
+root@web-app-deployment-67ddf4979c-kcmf5:/etc/nginx/conf.d# cat default.conf
+server {
+    listen       80;
+    listen  [::]:80;
+    server_name  localhost;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+    }
+    
+    location /app2 {
+        root   /usr/share/nginx/html;
+        try_files  /app2.html =404;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
+    #}
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    #location ~ \.php$ {
+    #    root           html;
+    #    fastcgi_pass   127.0.0.1:9000;
+    #    fastcgi_index  index.php;
+    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+    #    include        fastcgi_params;
+    #}
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+}
+```
+
+# netstat 설치
+ls
+apt update & upgrade -y
+apt install net-tools
+
+# Modify index.html of Nginx pod
+cd  /usr/share/nginx/html
+
+cat <<EOF > index.html
+pod 11111111111
+EOF
+
+# Test the access of pod via service
+curl <service_name>:<port>
+curl web-app-service:8080
+
+# Check the container port number
+kubectl describe pod <pod_name> -n <namespace>
+kubectl describe pod web-app-deployment-59d98d6dc5-pkvcn -n alb-test-infra

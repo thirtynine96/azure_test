@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: webapp
+
+---
+# NOTE: 서비스는 'app' 레이블이 'web-app'인 Pod들을 선택함.
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-app-service
+  namespace: webapp
+spec:
+  selector:
+    app: web-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app-deployment
+  namespace: webapp
+  labels:
+    app: web-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      containers:
+      - name: web-app
+        image: dustinacr03.azurecr.io/myweb:1.1
+        ports:
+        - containerPort: 80

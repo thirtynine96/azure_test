@@ -1,0 +1,406 @@
+########################################################
+# Azure login
+########################################################
+az login
+az account list -o table
+az account show --query id --output tsv
+
+## 구독 지정
+SUBSCRIPTION=$(az account show --query id --output tsv) # multicloud enabling
+az account set -s $SUBSCRIPTION
+
+
+# azure resource group 확인
+az group list --output table
+
+
+# Index 변수 (vnet01 / Cluste01 / Netowrk)
+VnetIndex='v01'
+ClusterIndex='c01'
+NetworCidr0='10.30.0.0/16'
+NetworCidr1='10.30.1.0/24'
+NetworCidr2='10.30.2.0/24'
+NetworCidr3='10.30.3.0/24'
+NetworCidr4='10.30.4.0/24'
+
+LOCATION='koreacentral'
+RESOURCE_GROUP='dustinvnet'$VnetIndex
+
+
+# AKS 리소스 그룹 생성하기
+# az group create -n $RESOURCE_GROUP -l $LOCATION
+
+# az group show --name $RESOURCE_GROUP --output table
+# az group show --name $RESOURCE_GROUP --output table
+
+# ##### 제일 많이 사용 ####
+# # azure resource 확인 (특정 resource group 에 속한)
+# az resource list --resource-group $RESOURCE_GROUP --output table
+
+
+
+########################################################
+# ACR 생성
+########################################################
+# Ref. 
+# - https://microsoftlearning.github.io/AZ500-AzureSecurityTechnologies.ko-kr/Instructions/Labs/LAB_04_ConfiguringandSecuringACRandAKS.html
+##  This is mandantory link which you must see.
+########################################################
+# Azure Container Registry 생성
+ACR_NAME='dustinacr011'
+az acr create -g $RESOURCE_GROUP -n $ACR_NAME \
+  --sku Basic --admin-enabled true
+
+
+# ACR 자격 증명 가져오기
+ACR_PASSWORD=$(az acr credential show -n $ACR_NAME \
+  --query "passwords[0].value" -o tsv)
+
+LOGIN_SERVER=$(az acr show -n $ACR_NAME \
+  --query loginServer -o tsv)
+
+# # ACR 목록 확인
+# az acr list --resource-group $RESOURCE_GROUP --output table
+
+# # ACR 로그인 서버 확인
+# az acr show --name $ACR_NAME --query loginServer
+
+# # ACR 이미지 확인 및 Tag 확인
+# az acr repository list -n $ACR_NAME -o table
+# az acr repository show-tags -n $ACR_NAME --repository nginx --output table
+
+
+
+
+########################################################
+# Container Image 생성 및 ACR 에 업로드
+# 1. Dockerfile 생성
+# 2. Container Image Build 
+# 3. ACR 에 Image upload
+########################################################
+# Ref.
+# - https://microsoftlearning.github.io/AZ500-AzureSecurityTechnologies.ko-kr/Instructions/Labs/LAB_04_ConfiguringandSecuringACRandAKS.html
+########################################################
+
+# index.html 파일 생성
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container</title>
+</head>
+<body>
+  <h2>Welcome to Dustin Test</h2>   
+  <h3>1111111111111111111111</h3>
+</body>
+</html>
+
+# index2.html 파일 생성
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container</title>
+</head>
+<body>
+  <h2>Welcome to Dustin Test</h2>   
+  <h3>222222222222222222222</h3>
+</body>
+</html>
+
+# Dockerfile 작성 (파일명 : Dockerfile_aks1)
+FROM nginx:latest
+COPY ./applications/traffic_loadbalancing/index.html /usr/share/nginx/html/index.html
+
+
+# Dockerfile 작성 (파일명 : Dockerfile_aks2)
+FROM nginx:latest
+COPY ./applications/traffic_loadbalancing/index2.html /usr/share/nginx/html/index.html
+
+########################################################
+# Dockerfile에서 ACR로 이미지 빌드 및 푸시 
+########################################################
+### 이 명령은 로컬에 docker 설치가 필요없음. Azure Cloud 에서 직접 이미지 빌드하고 ACR 에 PUSH 를 자동화함.
+### . : 로컬 소스 디렉토리 경로 혹은 Git 리포지토리에 대한 URL임. 원격 tarball, Azure Container Registry 의 OCI 아티팩트 리포지토리를 지정할 수 있음.
+# 아래 명령 수행 위치 : azure_test 레포위치에서 실행.
+image="aks01:v02"
+az acr build --image $image --registry $ACR_NAME \
+  --file Dockerfile_aks1 .
+
+image="aks02:v02"
+az acr build --image $image --registry $ACR_NAME \
+  --file Dockerfile_aks2 .
+
+
+# # ACR 이미지 확인
+# az acr repository list -n $ACR_NAME -o table
+# az acr repository show-tags -n $ACR_NAME --repository aks02 --output table
+
+
+# # ACR 의 컨테이너 이미지 삭제
+# az acr repository delete --name $ACR_NAME --image aks01:v1
+# az acr repository delete --name $ACR_NAME --image aks02:v2
+
+# # ACR에 푸시한 이미지를 ACR 에서 실행
+# az acr run -r $ACR_NAME --cmd 'docker run -d $Registry/myweb:1.0' /dev/null
+
+# ACR 이미지로 컨테이너 만들기
+# containerGroupName="aci-acr"
+# imageTag="$LOGIN_SERVER/$image"
+# az container create -g $RESOURCE_GROUP -n $containerGroupName \
+#   --image $imageTag --cpu 1 --memory 1 \
+#   --registry-username $ACR_NAME \
+#   --registry-password $ACR_PASSWORD \
+#   --dns-name-label "[ACI_NAME]" --ports 80 \
+#   --no-wait
+
+# 컨테이너 인스턴스의 URL 가져오기
+# az container show -g $RESOURCE_GROUP -n $containerGroupName \
+#   --query ipAddress.fqdn -o tsv
+
+########################################################
+# Docker Hub 에 있는 컨테이너 이미지를 ACR 로 복사하기 
+########################################################
+# az acr import --name $ACR_NAME --source docker.io/library/nginx:latest --image nginx:v1
+
+# NAT Gateway 가 연결되는 Subnet
+PUB_SUB_NET1='PublicSubnet'$VnetIndex$ClusterIndex
+
+# Private Subnet 생성 및 NSG 적용
+PRIV_SUB_NET1='PrivateSubnet1'$VnetIndex$ClusterIndex  # node subnet
+PRIV_SUB_NET2='PrivateSubnet2'$VnetIndex$ClusterIndex  # pod subnet (nodepool1)
+PRIV_SUB_NET3='PrivateSubnet3'$VnetIndex$ClusterIndex  # pod subnet (nodepool2)
+
+
+########################################################
+# AKS cluster 01 생성 
+########################################################
+
+# Azure AD 통합을 위한 서비스 주체 생성
+# az ad sp create-for-rbac --skip-assignment
+
+# 변수 설정 for aks third version
+AKS_CLUSTER_NAME='dustinaks-cluster-ap'$VnetIndex$ClusterIndex
+# az account list -o table
+SUBSCRIPTION=$(az account show --query id --output tsv) # multicloud enabling
+VNET_NAME='dustinVnet_ap'$VnetIndex
+SUBNET_NAME_NODE=$PRIV_SUB_NET1
+SUBNET_NAME_POD=$PRIV_SUB_NET2
+LOCATION='koreacentral'
+NODE_COUNT=3
+MAX_PODS=250
+
+
+# NAT GW 확인
+NAT_GW_NAME='dustin-NatGW'$VnetIndex$ClusterIndex
+az network nat gateway show --resource-group $RESOURCE_GROUP --name $NAT_GW_NAME
+NATGW_ID=$(az network nat gateway show --resource-group $RESOURCE_GROUP --name $NAT_GW_NAME --query id -o tsv)
+
+########################################################
+# vnet 과 nat gateway 연결
+########################################################
+## - NAT Gateway가 VNet의 특정 서브넷에 연결되어, 해당 서브넷의 아웃바운드 트래픽이 NAT Gateway를 통해 라우팅됨.
+
+# Associated with NAT GW and Node Subnet
+az network vnet subnet update \
+  --resource-group $RESOURCE_GROUP \
+  --vnet-name $VNET_NAME \
+  --name $SUBNET_NAME_POD \
+  --nat-gateway $NAT_GW_NAME
+
+# Associated with NAT GW and Pod Subnet
+az network vnet subnet update \
+  --resource-group $RESOURCE_GROUP \
+  --vnet-name $VNET_NAME \
+  --name $SUBNET_NAME_NODE \
+  --nat-gateway $NAT_GW_NAME
+
+# AKS Cluster ap01 생성
+# NOTE:2_aks_01 copy.azcli : node subnet 과 pod subnet 을 구분했는데, 꼭 구분해야 하는지 ? 구분 안하면 어떻게 작동되는지?
+az aks create \
+    --name $AKS_CLUSTER_NAME \
+    --resource-group $RESOURCE_GROUP \
+    --location $LOCATION \
+    --max-pods $MAX_PODS \
+    --node-count $NODE_COUNT \
+    --network-plugin azure \
+    --vnet-subnet-id /subscriptions/$SUBSCRIPTION/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Network/virtualNetworks/$VNET_NAME/subnets/$SUBNET_NAME_NODE \
+    --pod-subnet-id /subscriptions/$SUBSCRIPTION/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Network/virtualNetworks/$VNET_NAME/subnets/$SUBNET_NAME_POD \
+    --enable-addons monitoring \
+    --generate-ssh-keys \
+    --enable-managed-identity \
+    --outbound-type userAssignedNATGateway
+
+
+# AKS 목록 확인
+az aks list --resource-group $RESOURCE_GROUP -o table
+
+
+# 서브넷 ID 가져오기
+# SUBNET_ID=$(az network vnet subnet show \
+#   --resource-group $RESOURCE_GROUP \
+#   --vnet-name $VNET_NAME \
+#   --name $SUBNET_NAME \
+#   --query id -o tsv)
+
+# AKS 클러스터 연결 (k9s, kubectl 사용가능하게 됨.)
+az aks get-credentials -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME
+
+az aks show -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME --query "networkProfile.vnetSubnetId" -o tsv 
+# AKS API Server DNS 확인
+az aks show -g $RESOURCE_GROUP -n $AKS_CLUST›ER_NAME -o table
+
+# AKS Cluster 삭제
+# az aks delete --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME --yes --no-wait
+
+########################################################
+# Private Cluster 생성하기
+# Ref.
+# - https://learn.microsoft.com/ko-kr/azure/aks/private-clusters?tabs=azure-porta
+########################################################
+
+# CHECKLIST:2_aks_01 copy.azcli : private subnet 에 worker node 를 구성했는데, 위 링크를 확인해야 할 필요가 있음.
+
+
+
+
+########################################################
+# AKS 클러스터에 신규 Node Pool 을 추가하기 (옵션)
+########################################################
+# Ref.
+# - https://learn.microsoft.com/en-us/azure/aks/create-node-pools#add-a-node-pool-with-a-unique-subnet  (노드풀을 subnet 에 추가?)
+########################################################
+
+# # 변수 설정
+# NODE_POOL_NAME='nodepool02'
+# SUBNET_NAME_POD=$PRIV_SUB_NET2
+# #SUBNET_RESOURCE_ID="/subscriptions/$SUBSCRIPTION/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Network/virtualNetworks/$VNET_NAME/subnets/$SUBNET_NAME_POD"
+
+# # Node Pool (노드 풀) 추가 명령어 실행 (기존 pod subnet 에 추가했음.)
+# az aks nodepool add \
+#     --resource-group $RESOURCE_GROUP \
+#     --cluster-name $AKS_CLUSTER_NAME \
+#     --name $NODE_POOL_NAME \
+#     --node-count 4 \
+#     --vnet-subnet-id /subscriptions/$SUBSCRIPTION/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Network/virtualNetworks/$VNET_NAME/subnets/$SUBNET_NAME_NODE \
+#     --pod-subnet-id /subscriptions/$SUBSCRIPTION/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Network/virtualNetworks/$VNET_NAME/subnets/$SUBNET_NAME_POD \
+
+# # 변수 설정
+# NODE_POOL_NAME='nodepool03'
+# SUBNET_NAME_POD=$PRIV_SUB_NET3
+
+# # Node Pool (노드 풀) 추가 명령어 실행 (신규 pod subnet 에 추가했음.)
+# az aks nodepool add \
+#     --resource-group $RESOURCE_GROUP \
+#     --cluster-name $AKS_CLUSTER_NAME \
+#     --name $NODE_POOL_NAME \
+#     --node-count 2 \
+#     --vnet-subnet-id /subscriptions/$SUBSCRIPTION/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Network/virtualNetworks/$VNET_NAME/subnets/$SUBNET_NAME_NODE \
+#     --pod-subnet-id /subscriptions/$SUBSCRIPTION/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Network/virtualNetworks/$VNET_NAME/subnets/$SUBNET_NAME_POD
+
+# # AKS Node pool 목록 확인
+# az aks nodepool list --resource-group $RESOURCE_GROUP --cluster-name $AKS_CLUSTER_NAME -o table
+
+# az aks nodepool list \
+# --resource-group $RESOURCE_GROUP \
+# --cluster-name $AKS_CLUSTER_NAME \
+# --query "[].{Name:name, NodeCount:count, VMSize:vmSize, MaxPods:maxPods, Mode:mode, OsType:osType, ProvisioningState:provisioningState, SubnetId:subnetId, NodePublicIP:nodePublicIP}" -o table
+
+
+# # AKS node pool 정보확인
+# az aks nodepool show --cluster-name $AKS_CLUSTER_NAME \
+#     --name $NODE_POOL_NAME \
+#     --resource-group $RESOURCE_GROUP
+
+
+# # AKS node pool 삭제
+# az aks nodepool delete --resource-group $RESOURCE_GROUP --cluster-name $AKS_CLUSTER_NAME --name $NODE_POOL_NAME --no-wait
+
+# ########################################################
+# # worker node IP 확인
+# ########################################################
+# # Node의 Resource Group 확인
+# NODE_RESOURCE_GROUP=$(az aks show --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME --query nodeResourceGroup -o tsv)
+
+# # worker node List (목록) 확인
+# az vmss list --resource-group $NODE_RESOURCE_GROUP --output table
+# VMSS_NAME='aks-nodepool1-90963007-vmss'
+# # az vmss list-instances --resource-group $NODE_RESOURCE_GROUP --name <VMSS 이름> -o table
+# az vmss list-instances --resource-group $NODE_RESOURCE_GROUP --name $VMSS_NAME -o table
+
+# # worker node IP 확인
+# az vmss nic list --resource-group $NODE_RESOURCE_GROUP --vmss-name $VMSS_NAME -o table
+# az vmss nic list --resource-group $NODE_RESOURCE_GROUP --vmss-name $VMSS_NAME -o table
+# az vmss nic list --resource-group $NODE_RESOURCE_GROUP --vmss-name $VMSS_NAME --query '[].ipConfigurations[].privateIPAddress' -o table
+
+# # worker node 접근방법
+# WORKER_NODE_NAME=aks-nodepool1-41486485-vmss000000
+# kubectl node-shell $WORKER_NODE_NAME # 이거 쓰자
+# kubectl debug node/$WORKER_NODE_NAME -it --image=mcr.microsoft.com/cbl-mariner/busybox:2.0
+
+
+########################################################
+# AKS 에 ACR 연결하기
+########################################################
+# Ref.
+# - https://learn.microsoft.com/ko-kr/azure/aks/cluster-container-registry-integration?tabs=azure-cli (Good)
+# - https://microsoftlearning.github.io/AZ500-AzureSecurityTechnologies.ko-kr/Instructions/Labs/LAB_04_ConfiguringandSecuringACRandAKS.html
+########################################################
+
+# ACR_NAME 가져오기 (acr 이 생성된 AKS_RESOURCE_GROUP 값이 할당되어야함. 아니면 에러 발생)
+ACR_NAME=$(az acr list --resource-group $RESOURCE_GROUP --query '[].{Name:name}' --output tsv)
+# AKS 에 ACR 연결
+az aks update --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME --attach-acr $ACR_NAME
+
+
+# NOTE: AKS 에 ACR 접근을 위한 Role 할당 (MANAGED_ID 에 Role 할당) -> 이걸로 ImagePullBackOff 가 해결 안됨.
+# Console 에서는 여기서 확인 (Home > Resource groups > MC_dustinAksRgv02c01_dustinaks-cluster-apv02c01_koreacentral | Access control (IAM) > dustinaks-cluster-apv02c01)
+AKS_VNET_ID=$(az network vnet show --name $VNET_NAME --resource-group $RESOURCE_GROUP --query id -o tsv)
+AKS_MANAGED_ID=$(az aks show --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP --query identity.principalId -o tsv)
+az role assignment create --assignee $AKS_MANAGED_ID --role "Contributor" --scope $AKS_VNET_ID
+
+az role assignment list --assignee $AKS_MANAGED_ID --scope $AKS_VNET_ID
+
+
+az acr login -n $ACR_NAME --expose-token
+# 실행결과
+# You can perform manual login using the provided access token below, for example: 'docker login loginServer -u 00000000-0000-0000-0000-000000000000 -p accessToken'
+# {
+#   "accessToken": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+#   "loginServer": "dustinacr01.azurecr.io"
+# }
+
+########################################################
+# ACR 이용해서 AKS 에 app 배포 (Deployment)
+# Ref: https://kubernetes.io/docs/reference/kubectl/generated/kubectl_create/kubectl_create_deployment/#examples
+########################################################
+# ACR 목록 확인
+az acr list --resource-group $RESOURCE_GROUP --output table
+
+# kubectl create deployment my-web --image dustinacr03.azurecr.io/myweb:1.0 --replicas=3
+# kubectl apply -f ../yaml/acr-nginx.yaml # NOTE: 위 방법보다 이게 편함. 이거 안됨.
+# kubectl apply -f /Users/daeseon/_TechOps/project/Dustin-kim/azure_test/yaml/acr-nginx.yaml
+# kubectl delete -f /Users/daeseon/_TechOps/project/Dustin-kim/azure_test/yaml/acr-nginx.yaml
+
+# kubectl apply -f /Users/daeseon/_TechOps/project/Dustin-kim/azure_test/yaml/test/deployment1.yaml
+# kubectl delete -f /Users/daeseon/_TechOps/project/Dustin-kim/azure_test/yaml/test/deployment1.yaml
+
+# kubectl apply -f /Users/daeseon/_TechOps/project/Dustin-kim/azure_test/yaml/test/deployment2.yaml
+# kubectl delete -f /Users/daeseon/_TechOps/project/Dustin-kim/azure_test/yaml/test/deployment2.yaml
+
+# app 배포
+kubectl apply -f /Users/daeseon/_TechOps/project/Dustin-kim/azure_test/yaml/deployment_aks1.yaml
+kubectl apply -f /Users/daeseon/_TechOps/project/Dustin-kim/azure_test/yaml/deployment_aks1_loadbalancer.yaml
+kubectl delete -f /Users/daeseon/_TechOps/project/Dustin-kim/azure_test/yaml/deployment_aks1.yaml
+
+
+# Call Test to Service
+kubectl create namespace alpine
+kubectl run alpine-pod --image=alpine --namespace=alpine -- sh -c "sleep infinity"
+kubectl exec -it alpine-pod --namespace=alpine /bin/sh
+apk --no-cache add curl
+while true; do curl 10.0.76.206:8080; sleep 2; done
+while true; do curl 10.0.180.141; sleep 2; done
+
+# 리소스 삭제
+az group delete -n $RESOURCE_GROUP --no-wait --yes

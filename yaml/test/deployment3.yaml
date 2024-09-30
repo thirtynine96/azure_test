@@ -1,0 +1,119 @@
+
+# NOTE: Service 의 target Port 를 마음대로 수정하면 안됨. 
+# 이것은 실제 pod 내부에서 컨테이너 형태로 실행된 application 이 사용하는 port 를 기입해야 함.!!!
+# containers 의 port 는 application 의 실제 port 로 셋팅하는 게 의미 있음.
+
+# 1 개의 서비스에 2의 Deployment 가 연결되어 있는 구조.
+# 1 개의 서비스 
+# 2 개의 Deployment
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: twoapp
+
+---
+# NOTE: 'app' 레이블이 'web-app'인 Pod들을 선택함.
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-app-service
+  namespace: twoapp
+spec:
+  selector:
+    app: web-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: web-app-deployment
+#   namespace: twoapp
+#   labels:
+#     app: web-app
+# spec:
+#   replicas: 2
+#   selector:
+#     matchLabels:
+#       app: web-app
+#   template:
+#     metadata:
+#       labels:
+#         app: web-app
+#     spec:
+#       containers:
+#       - name: web-app
+#         image: nginx:1.19
+#         ports:
+#         - containerPort: 80
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app-deployment
+  namespace: twoapp
+  labels:
+    app: web-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      containers:
+      - name: web-app
+        image: dustinacr03.azurecr.io/myweb:1.1
+        ports:
+        - containerPort: 80
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-v1-deployment
+  namespace: twoapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      containers:
+        - name: nginx-v1
+          image: dustinacr03.azurecr.io/nginx:v2
+          ports:
+            - containerPort: 80
+
+# NOTE: Deployment 해석
+# 이 코드는 Kubernetes Deployment 객체를 정의하고 있음.
+# apiVersion: apps/v1: Deployment 리소스의 API 버전임.
+# kind: Deployment: 이 객체가 Deployment 타입임을 나타냄.
+# metadata: Deployment에 대한 메타데이터를 정의함.
+# name: web-app-deployment: Deployment의 이름임.
+# namespace: twoapp: Deployment가 속할 네임스페이스임.
+# labels: Deployment에 부여할 레이블임.
+# spec: Deployment의 구체적인 사양을 정의함.
+# replicas: 2: 유지할 Pod의 복제본 수임.
+# selector: 어떤 Pod를 관리할지 지정함.
+# template: 생성할 Pod의 템플릿을 정의함. (#NOTE!!)
+# metadata: Pod의 메타데이터임.
+# spec: Pod의 구체적인 사양임.
+# containers: Pod 내에서 실행할 컨테이너들을 정의함.
+# name: web-app: 컨테이너의 이름임.
+# image: dustinacr03.azurecr.io/myweb:1.0: 사용할 Docker 이미지임.
+# ports: 컨테이너가 노출할 포트를 지정함.
+# 이 Deployment는 'twoapp' 네임스페이스에 'web-app' 애플리케이션의 2개 복제본을 생성하고 관리함. 각 Pod는 dustinacr03.azurecr.io/myweb:1.1 이미지를 사용하며 80번 포트를 노출함.

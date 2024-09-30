@@ -1,7 +1,10 @@
+# worker node 를 지정해서 pod 생성
+
 apiVersion: v1
 kind: Pod
 metadata:
   name: alpine-pod1
+  namespace: dustinapp
 spec:
   containers:
   - name: alpine1
@@ -10,11 +13,14 @@ spec:
   nodeSelector:
     agentpool: nodepool1
 
+
+
 ---
 apiVersion: v1
 kind: Pod
 metadata:
   name: alpine-pod2
+  namespace: dustinapp
 spec:
   containers:
   - name: alpine2
@@ -29,6 +35,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: alpine-pod3
+  namespace: dustinapp
 spec:
   containers:
   - name: alpine3
@@ -36,3 +43,5 @@ spec:
     command: ["/bin/sh", "-c", "sleep infinity"]
   nodeSelector:
     agentpool: nodepool03
+
+

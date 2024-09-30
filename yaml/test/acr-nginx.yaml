@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: dustinacr01.azurecr.io/myweb:1.0
+        image: dustinacr03.azurecr.io/myweb:1.0
         ports:
         - containerPort: 80
 
@@ -42,6 +42,6 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: dustinacr01.azurecr.io/nginx:v1
+        image: dustinacr03.azurecr.io/nginx:v1
         ports:
         - containerPort: 80

@@ -1,0 +1,333 @@
+########################################################
+# Azure login
+########################################################
+az login
+az account list -o table
+az account show --query id --output tsv
+
+## 구독 지정
+SUBSCRIPTION=$(az account show --query id --output tsv) # multicloud enabling
+az account set -s $SUBSCRIPTION
+
+# azure resource group 확인
+# az group list --output table
+# az group show --name $RESOURCE_GROUP --output table
+
+# Index 변수 (vnet01 / Cluste01 / Netowrk)
+VnetIndex='v01'
+ClusterIndex='c01'
+NetworCidr0='10.30.0.0/16'
+NetworCidr1='10.30.1.0/24'
+NetworCidr2='10.30.2.0/24'
+NetworCidr3='10.30.3.0/24'
+NetworCidr4='10.30.4.0/24'
+
+
+########################################################
+# Vnet 리소스 그룹 생성하기
+########################################################
+# VNET 리소스 그룹 생성
+RESOURCE_GROUP='dustinvnet'$VnetIndex
+LOCATION='koreacentral'
+az group create -n $RESOURCE_GROUP -l $LOCATION
+#az group update --resource-group $RESOURCE_GROUP --set tags.CostCenter='{"Dept":"IT","Environment":"Test"}'
+az group show --name $RESOURCE_GROUP --output table
+
+
+# azure resource 확인 (특정 resource group 에 속한)
+az resource list --resource-group $RESOURCE_GROUP --output table
+
+
+
+# Provider register 목록확인 (리소스 공급자가 등록되어 있어야 함)
+az provider list --query "[?registrationState=='Registered'].{Provider:namespace, Status:registrationState}" --out table
+az provider list --out table
+
+
+# Provider register 등록
+az provider register -n Microsoft.OperationsManagement
+az provider register -n Microsoft.OperationalInsights
+az provider register -n Microsoft.ContainerService
+az provider register -n Microsoft.ContainerRegistry
+
+
+
+########################################################
+# VNET 생성 / NSG 생성
+########################################################
+########################################################
+# aks cluster 1 용 4개 subnet 생성 및 NSG 생성
+########################################################
+# Network Security Group (NSG) 생성 (총 8개)
+pubNSG1='dustinpubNSG'$VnetIndex$ClusterIndex
+NSG1='dustinNSG1'$VnetIndex$ClusterIndex
+NSG2='dustinNSG2'$VnetIndex$ClusterIndex
+NSG3='dustinNSG3'$VnetIndex$ClusterIndex
+NSG4='dustinNSG4'$VnetIndex$ClusterIndex
+
+az network nsg create --resource-group $RESOURCE_GROUP --name $pubNSG1 --location $LOCATION
+az network nsg create --resource-group $RESOURCE_GROUP --name $NSG1 --location $LOCATION
+az network nsg create --resource-group $RESOURCE_GROUP --name $NSG2 --location $LOCATION
+az network nsg create --resource-group $RESOURCE_GROUP --name $NSG3 --location $LOCATION
+az network nsg create --resource-group $RESOURCE_GROUP --name $NSG4 --location $LOCATION
+
+
+# Vnet 및 public subnet 생성
+VNET_NAME='dustinVnet_ap'$VnetIndex
+PUB_SUB_NET1='PublicSubnet'$VnetIndex$ClusterIndex
+
+az network vnet create \
+  --resource-group $RESOURCE_GROUP \
+  --name $VNET_NAME \
+  --address-prefix $NetworCidr0 \
+  --location $LOCATION \
+  --subnet-name $PUB_SUB_NET1 \
+  --subnet-prefix $NetworCidr1 \
+  --network-security-group $pubNSG1
+
+# Vnet cidr 변경 update
+# az network vnet update \
+#   --address-prefix 10.10.0.0/8 \
+#   --name $VNET_NAME \
+#   --resource-group $RESOURCE_GROUP
+
+# 생성한 Subnet 확인
+az network vnet subnet show --resource-group $RESOURCE_GROUP --vnet-name $VNET_NAME --name $PUB_SUB_NET1 -o table
+
+
+
+
+# 리소스 그룹의 모든 vnet 확인
+az network vnet list
+az network vnet list -g $RESOURCE_GROUP -o table
+
+########################################################
+# Subnet 구성 (AG용, Ingress용, PrivateLinkd용, DB용) 
+########################################################
+# - https://learn.microsoft.com/ko-kr/azure/architecture/reference-architectures/containers/aks/baseline-aks
+# - https://learn.microsoft.com/ko-kr/azure/architecture/reference-architectures/containers/aks-multi-region/aks-multi-cluster
+
+# Private Subnet 생성 및 NSG 적용
+PRIV_SUB_NET1='PrivateSubnet1'$VnetIndex$ClusterIndex  # node subnet
+PRIV_SUB_NET2='PrivateSubnet2'$VnetIndex$ClusterIndex  # pod subnet 
+PRIV_SUB_NET3='PrivateSubnet3'$VnetIndex$ClusterIndex  # agfc subnet
+
+az network vnet subnet create \
+  --resource-group $RESOURCE_GROUP \
+  --vnet-name $VNET_NAME \
+  --name $PRIV_SUB_NET1 \
+  --address-prefix $NetworCidr2 \
+  --network-security-group $NSG1
+
+az network vnet subnet create \
+  --resource-group $RESOURCE_GROUP \
+  --vnet-name $VNET_NAME \
+  --name $PRIV_SUB_NET2 \
+  --address-prefix $NetworCidr3 \
+  --network-security-group $NSG2
+  
+
+az network vnet subnet create \
+  --resource-group $RESOURCE_GROUP \
+  --vnet-name $VNET_NAME \
+  --name $PRIV_SUB_NET3 \
+  --address-prefix $NetworCidr4 \
+  --network-security-group $NSG3
+
+# 생성한 Subnet 확인
+az network vnet subnet show --resource-group $RESOURCE_GROUP --name $PRIV_SUB_NET1 --vnet-name $VNET_NAME -o table
+az network vnet subnet show --resource-group $RESOURCE_GROUP --name $PRIV_SUB_NET2 --vnet-name $VNET_NAME -o table
+az network vnet subnet show --resource-group $RESOURCE_GROUP --name $PRIV_SUB_NET3 --vnet-name $VNET_NAME -o table
+
+# Subnet list 목록 확인
+az network vnet subnet list --resource-group $RESOURCE_GROUP --vnet-name $VNET_NAME --output table
+
+
+########################################################
+# NAT Gateway 생성 / Public IP 생성
+########################################################
+
+# Public IP 생성
+PUBLIC_IP_NAME='NAT-GW-pubIP'$VnetIndex$ClusterIndex
+az network public-ip create \
+  --resource-group $RESOURCE_GROUP \
+  --name $PUBLIC_IP_NAME \
+  --sku Standard \
+  --location $LOCATION \
+  --zone 1 2 3
+
+# NAT Gateway 생성
+NAT_GW_NAME='dustin-NatGW'$VnetIndex$ClusterIndex
+az network nat gateway create \
+  --resource-group $RESOURCE_GROUP \
+  --name $NAT_GW_NAME \
+  --location $LOCATION \
+  --public-ip-addresses $PUBLIC_IP_NAME \
+  --idle-timeout 10
+
+
+# NOTE
+#  1.[x] public subnet 설정이 가능한지 확인 필요. -> 기본적으로 private subnet 으로 생성됨
+#  2.[x] NAT Gateway 와 aks cluster 간 연결이 필요함.
+
+# NOTE : NAT Gateway 와 aks cluster 간 연결작업
+# 연결 방법 2가지 
+## 1. udr 설정을 통해서 연결
+## 2. aks cluster 의 subnet 에 nat gateway 연결
+
+# NOTE : AKS 생성하기 전에 이 작업 수행.
+# Public Subnet 에 NAT Gateway 연결 
+# az network vnet subnet update \
+#   --resource-group $RESOURCE_GROUP \
+#   --vnet-name $VNET_NAME \
+#   --name $PUB_SUB_NET1 \
+#   --name $PUB_SUB_NET1 \
+#   --nat-gateway $NAT_GW_NAME
+
+# NAT GW 확인
+az network nat gateway show --resource-group $RESOURCE_GROUP --name $NAT_GW_NAME
+
+
+########################################################
+# 삭제
+########################################################
+
+# 리소스 그룹 삭제
+az group delete -n $RESOURCE_GROUP --no-wait --yes
+
+# Vnet 삭제
+az network vnet delete --resource-group $RESOURCE_GROUP --name $VNET_NAME
+
+# Subnet 삭제
+az network vnet subnet delete --name $PRIV_SUB_NET1 --resource-group $RESOURCE_GROUP --vnet-name $VNET_NAME
+az network vnet subnet delete --name $PRIV_SUB_NET1 --resource-group $RESOURCE_GROUP --vnet-name $VNET_NAME
+az network vnet subnet delete --name $PRIV_SUB_NET2 --resource-group $RESOURCE_GROUP --vnet-name $VNET_NAME
+
+
+########################################################################################################################################################################
+
+
+########################################################
+# aks cluster 2 용 4개 subnet 생성 및 NSG 생성
+########################################################
+# Network Security Group (NSG) 생성 (총 8개)
+ClusterIndex='c02'
+NSG5='dustinNSG5'$VnetIndex$ClusterIndex
+NSG6='dustinNSG6'$VnetIndex$ClusterIndex
+NSG7='dustinNSG7'$VnetIndex$ClusterIndex
+
+
+
+az network nsg create --resource-group $RESOURCE_GROUP --name $NSG5 --location $LOCATION
+az network nsg create --resource-group $RESOURCE_GROUP --name $NSG6 --location $LOCATION
+az network nsg create --resource-group $RESOURCE_GROUP --name $NSG7 --location $LOCATION
+
+
+
+# 생성한 Subnet 확인
+az network vnet subnet show --resource-group $RESOURCE_GROUP --vnet-name $VNET_NAME --name $PUB_SUB_NET1
+
+
+# 리소스 그룹의 모든 vnet 확인
+az network vnet list
+az network vnet list -g $RESOURCE_GROUP -o table
+
+########################################################
+# Subnet 구성 (AG용, Ingress용, PrivateLinkd용, DB용) 
+########################################################
+# - https://learn.microsoft.com/ko-kr/azure/architecture/reference-architectures/containers/aks/baseline-aks
+# - https://learn.microsoft.com/ko-kr/azure/architecture/reference-architectures/containers/aks-multi-region/aks-multi-cluster
+
+# Private Subnet 생성 및 NSG 적용
+PRIV_SUB_NET4='PrivateSubnet4'$ClusterIndex  # node subnet
+PRIV_SUB_NET5='PrivateSubnet5'$ClusterIndex  # pod subnet (nodepool1)
+PRIV_SUB_NET6='PrivateSubnet6'$ClusterIndex  # pod subnet (nodepool2)
+
+az network vnet subnet create \
+  --resource-group $RESOURCE_GROUP \
+  --vnet-name $VNET_NAME \
+  --name $PRIV_SUB_NET4 \
+  --address-prefix 10.30.5.0/24 \
+  --network-security-group $NSG4
+
+az network vnet subnet create \
+  --resource-group $RESOURCE_GROUP \
+  --vnet-name $VNET_NAME \
+  --name $PRIV_SUB_NET5 \
+  --address-prefix 10.30.6.0/24 \
+  --network-security-group $NSG5
+  
+
+az network vnet subnet create \
+  --resource-group $RESOURCE_GROUP \
+  --vnet-name $VNET_NAME \
+  --name $PRIV_SUB_NET6 \
+  --address-prefix 10.30.7.0/24 \
+  --network-security-group $NSG6
+
+# 생성한 Subnet 확인
+az network vnet subnet show --resource-group $RESOURCE_GROUP --name $PRIV_SUB_NET4 --vnet-name $VNET_NAME
+az network vnet subnet show --resource-group $RESOURCE_GROUP --name $PRIV_SUB_NET5 --vnet-name $VNET_NAME
+
+# Subnet list 목록 확인
+az network vnet subnet list --resource-group $RESOURCE_GROUP --vnet-name $VNET_NAME --output table
+
+
+########################################################
+# NAT Gateway 생성 / Public IP 생성
+# NAT GW : 2개
+# Public IP : 2개
+########################################################
+
+# ---------------------------------------
+# AKS Cluster 01 용 NAT Gateway 생성
+# ---------------------------------------
+ClusterIndex='c01'
+# Public IP 생성
+PUBLIC_IP_NAME='NAT-GW-pubIP'$ClusterIndex
+az network public-ip create \
+  --resource-group $RESOURCE_GROUP \
+  --name $PUBLIC_IP_NAME \
+  --sku Standard \
+  --location $LOCATION \
+  --zone 1 2 3
+
+# NAT Gateway 생성
+NAT_GW_NAME='dustin-NatGW'$ClusterIndex
+az network nat gateway create \
+  --resource-group $RESOURCE_GROUP \
+  --name $NAT_GW_NAME \
+  --location $LOCATION \
+  --public-ip-addresses $PUBLIC_IP_NAME \
+  --idle-timeout 10
+
+
+# ---------------------------------------
+# AKS Cluster 02 용 NAT Gateway 생성
+# ---------------------------------------
+ClusterIndex='c02'
+
+# Public IP 생성
+PUBLIC_IP_NAME='NAT-GW-pubIP'$ClusterIndex
+az network public-ip create \
+  --resource-group $RESOURCE_GROUP \
+  --name $PUBLIC_IP_NAME \
+  --sku Standard \
+  --location $LOCATION \
+  --zone 1 2 3
+
+# NAT Gateway 생성
+NAT_GW_NAME='dustin-NatGW'$ClusterIndex
+az network nat gateway create \
+  --resource-group $RESOURCE_GROUP \
+  --name $NAT_GW_NAME \
+  --location $LOCATION \
+  --public-ip-addresses $PUBLIC_IP_NAME \
+  --idle-timeout 10
+
+
+
+
+  # 리소스 그룹 삭제
+az group delete -n dustinvnetv01 --no-wait --yes
+az group delete -n dustinAksRgv01c01 --no-wait --yes

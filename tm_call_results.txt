@@ -1,0 +1,2801 @@
+Starting 200 requests to http://dustin-appt01.trafficmanager.net
+
+--- Request 1 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 2 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 3 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 4 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 5 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 6 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 7 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 8 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 9 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 10 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 11 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 12 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 13 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 14 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 15 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 16 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 17 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 18 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 19 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 20 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 21 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 22 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 23 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 24 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 25 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 26 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 27 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 28 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 29 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 30 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 31 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 32 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 33 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 34 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 35 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 36 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 37 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 38 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 39 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 40 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 41 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 42 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 43 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 44 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 45 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 46 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 47 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 48 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 49 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 50 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 51 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 52 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 53 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 54 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 55 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 56 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 57 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 58 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 59 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 60 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 61 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 62 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 63 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 64 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 65 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 66 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 67 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 68 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 69 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 70 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 71 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 72 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 73 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 74 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 75 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 76 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 77 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 78 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 79 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 80 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 81 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 82 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 83 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 84 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 85 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 86 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 87 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 88 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 89 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 90 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 91 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 92 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 93 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 94 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 95 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 96 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 97 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 98 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 99 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 100 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 101 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 102 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 103 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 104 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 105 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 106 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 107 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 108 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 109 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 110 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 111 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 112 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 113 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 114 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 115 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 116 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 117 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 118 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 119 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 120 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 121 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 122 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 123 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 124 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 125 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 126 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 127 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 128 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 129 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 130 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 131 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 132 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 133 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 134 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 135 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 136 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 137 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 138 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 139 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 140 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 141 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 142 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 143 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 144 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 145 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 146 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 147 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 148 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 149 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 150 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 151 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 152 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 153 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 154 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 155 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 156 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 157 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 158 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 159 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 160 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 161 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 162 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 163 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 164 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 165 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 166 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 167 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 168 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 169 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 170 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 171 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 172 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 173 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 174 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 175 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 176 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 177 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 178 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 1111111111111</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 179 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 180 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 181 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 182 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 183 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 184 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 185 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 186 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 187 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 188 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 189 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 190 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 191 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 192 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 193 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 194 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 195 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 196 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 197 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 198 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 199 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200
+
+--- Request 200 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Azure Container Instance</title>
+</head>
+<body>
+  <h2>Welcome to Dustin app</h2>
+  <h3>Cluster 2222222222222</h3>
+</body>
+</html>
+Status: 200

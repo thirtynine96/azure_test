@@ -1,0 +1,93 @@
+########################################################
+# Azure login
+########################################################
+az login
+az account list -o table
+az account show --query id --output tsv
+
+## 구독 지정
+SUBSCRIPTION=$(az account show --query id --output tsv) # multicloud enabling
+az account set -s $SUBSCRIPTION
+
+
+# azure resource group 확인
+az group list --output table
+
+# Index 변수 (vnet01 / Cluste01 / Netowrk)
+VnetIndex='v01'
+ClusterIndex='c01'
+TMIndex='t01'
+
+TM_RESOURCE_GROUP='dustinTMrg'$TMIndex
+az group create -n $TM_RESOURCE_GROUP -l $LOCATION
+
+az group show --name $TM_RESOURCE_GROUP --output table
+
+
+# Docs: https://docs.microsoft.com/ko-kr/azure/traffic-manager/quickstart-create-traffic-manager-profile
+# Docs: https://docs.microsoft.com/ko-kr/azure/traffic-manager/traffic-manager-manage-endpoints
+# Docs: https://docs.microsoft.com/ko-kr/azure/traffic-manager/traffic-manager-routing-methods
+
+# Traffic Manager 프로필 생성
+TM_PROFILE_NAME='dustinTMprofile'$TMIndex
+UNIQUE_DNS_NAME='dustin-app'$TMIndex
+az network traffic-manager profile create \
+  --name $TM_PROFILE_NAME \
+  --resource-group $TM_RESOURCE_GROUP \
+  --routing-method Weighted \
+  --unique-dns-name $UNIQUE_DNS_NAME
+
+
+
+
+# NOTE: name, reseource group 은 azure console 에서 확인했음.
+ALB_NAME='alb-3c0301e4' # For AKS cluster 1
+ALB_RESOURCE_GROUP='mc_dustinvnetv01_dustinaks-cluster-apv01c01_koreacentral'
+dustinalbep1_fqdn='gtcpfeejb5b3atd4.fz45.alb.azure.com'
+
+# AGFC_ID=$(az network alb show \
+#   --name $ALB_NAME \
+#   --resource-group $ALB_RESOURCE_GROUP \
+#   --query id -o tsv)
+# 결과 형태 : /subscriptions/<subscription-id>/resourceGroups/<resource-group-name>/providers/Microsoft.ServiceNetworking/trafficControllers/<application-gateway-for-containers-name>
+
+# Frontend FQDN 확인
+# az network application-gateway for-containers frontend show \
+#   --gateway-name <your-agfc-name> \
+#   --name <your-frontend-name> \
+#   --resource-group <your-resource-group> \
+#   --query fqdn \
+#   --output tsv
+
+# 첫 번째 엔드포인트 추가 (60% 트래픽)
+az network traffic-manager endpoint create \
+  --name dustinalbep1 \
+  --profile-name $TM_PROFILE_NAME \
+  --resource-group $TM_RESOURCE_GROUP \
+  --type externalEndpoints \
+  --target  $dustinalbep1_fqdn \
+  --weight 80
+
+
+
+
+# NOTE: alb name, reseource group 은 azure console 에서 확인했음.
+ALB_NAME='as-454c2e3f' # For AKS cluster 2
+ALB_RESOURCE_GROUP='mc_dustinvnetv02_dustinaks-cluster-apv02c02_koreacentral'
+dustinalbep2_fqdn='e6dteehaamhrb6aq.fz63.alb.azure.com'
+# AGFC_ID=$(az network alb show \
+#   --name $ALB_NAME \
+#   --resource-group $ALB_RESOURCE_GROUP \
+#   --query id -o tsv)
+# 결과 형태 : /subscriptions/<subscription-id>/resourceGroups/<resource-group-name>/providers/Microsoft.ServiceNetworking/trafficControllers/<application-gateway-for-containers-name>
+
+# 두 번째 엔드포인트 추가 (20% 트래픽)
+az network traffic-manager endpoint create \
+  --name dustinalbep2 \
+  --profile-name $TM_PROFILE_NAME \
+  --resource-group $TM_RESOURCE_GROUP \
+  --type externalEndpoints \
+  --target $dustinalbep2_fqdn \
+  --weight 20
+
+

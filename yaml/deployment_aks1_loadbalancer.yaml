@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: alb-test-infra
+---
+
+# NOTE: 서비스는 'app' 레이블이 'nginx-v1'인 Pod들을 선택함.
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+    service.beta.kubernetes.io/azure-load-balancer-internal-subnet: PrivateSubnet3v01c01
+  name: nginx-v2-svc
+  namespace: alb-test-infra
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: nginx-v2-pod
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-v2-deployment
+  namespace: alb-test-infra
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx-v2-pod
+  template:
+    metadata:
+      labels:
+        app: nginx-v2-pod
+    spec:
+      containers:
+        - name: nginx-conntainer
+          image: dustinacr011.azurecr.io/aks01:v02
+          ports:
+            - containerPort: 80

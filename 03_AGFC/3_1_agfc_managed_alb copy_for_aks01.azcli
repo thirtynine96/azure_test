@@ -1,0 +1,400 @@
+########################################################
+# Azure login
+########################################################
+az login
+az account list -o table
+az account show --query id --output tsv
+
+## 구독 지정
+SUBSCRIPTION=$(az account show --query id --output tsv) # multicloud enabling
+az account set -s $SUBSCRIPTION
+
+# azure resource group 확인
+az group list --output table
+# az group show --name $RESOURCE_GROUP --output table
+
+
+# Index 변수 (vnet01 / Cluste01 / Netowrk)
+VnetIndex='v01'
+ClusterIndex='c01'
+NetworCidr0='10.30.0.0/16'
+NetworCidr1='10.30.1.0/24'
+NetworCidr2='10.30.2.0/24'
+NetworCidr3='10.30.3.0/24'
+NetworCidr4='10.30.4.0/24'
+
+LOCATION='koreacentral'
+RESOURCE_GROUP='dustinvnet'$VnetIndex
+
+az group show --name $RESOURCE_GROUP --output table
+
+##### 제일 많이 사용 ####
+# azure resource 확인 (특정 resource group 에 속한)
+az resource list --resource-group $RESOURCE_GROUP --output table
+
+
+# NOTE!! 이 코드는 Azure Kubernetes Service(AKS) 클러스터에 Application Gateway for Containers(AGC)를 배포하고 구성하는 과정을 보여줍니다. 주요 단계는 다음과 같습니다.
+# 1. 사전 준비 작업
+#     Azure 리소스 공급자 등록
+#     AKS 클러스터에서 Workload Identity 및 OIDC 발급자 활성화
+#     ALB(Application Load Balancer) 컨트롤러 설치를 위한 사용자 관리 ID 생성 및 권한 부여
+# 2. ALB 컨트롤러 설치
+#     Helm 차트를 사용하여 ALB 컨트롤러를 AKS 클러스터에 설치
+#     ALB 컨트롤러는 AGC 리소스 및 하위 리소스의 수명주기를 관리
+# 3. AGC 배포 준비
+#     가상 네트워크 및 서브넷 생성
+#     관리 ID에 필요한 권한 부여(Network Contributor, AppGw for Containers Configuration Manager)
+# 4. AGC 리소스 및 연결(Association) 생성
+#     ApplicationLoadBalancer 커스텀 리소스 정의
+#     이 리소스를 통해 AGC가 프로비저닝됨
+# 5. 게이트웨이 및 HTTPRoute 리소스 정의
+#     Gateway 및 HTTPRoute 커스텀 리소스 생성
+#     이를 통해 AGC의 라우팅 규칙 및 백엔드 서비스 정의
+# 6. 부하 분산 설정(선택적)
+#     트래픽 분할 및 가중치 부여를 통한 부하 분산 구성
+
+# 이 스크립트를 실행하면 AKS 클러스터에 ALB 컨트롤러가 설치되고, Azure에 AGC 리소스가 프로비저닝됩니다. 그리고 정의된 Gateway 및 HTTPRoute 리소스에 따라 AGC가 트래픽을 적절히 라우팅하고 부하를 분산시킵니다.
+
+
+
+########################################################
+# AGFC (Application Gateway For Container) 를 AKS cluster 에 연결해서 배포하기
+# https://learn.microsoft.com/ko-kr/azure/application-gateway/for-containers/quickstart-deploy-application-gateway-for-containers-alb-controller?tabs=install-helm-windows
+########################################################
+
+
+########################################################
+# 사전작업 : ALB Controller 설치하기
+# 1. OIDC Issuer 및 Worklaod identity 사용 설정하기
+########################################################
+# Register required resource providers on Azure.
+az provider register --namespace Microsoft.ContainerService
+az provider register --namespace Microsoft.Network
+az provider register --namespace Microsoft.NetworkFunction
+az provider register --namespace Microsoft.ServiceNetworking
+
+
+# Install Azure CLI extensions.
+az extension add --name alb
+
+
+# If using an existing cluster, ensure you enable Workload Identity support on your AKS cluster. Workload identities can be enabled via the following:
+AKS_CLUSTER_NAME='dustinaks-cluster-ap'$VnetIndex$ClusterIndex
+
+
+# # AGFC 리소스 그룹 생성하기
+# AGFC_RESOURCE_GROUP='dustinAgfcRg'$ClusterIndex
+# az group create -n $AGFC_RESOURCE_GROUP -l $LOCATION
+
+
+# AKS 목록 확인
+az aks list --resource-group $RESOURCE_GROUP -o table
+az aks list -o table
+
+# AKS 클러스터 연결 (k9s, kubectl 사용가능하게 됨.)
+az aks get-credentials -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME
+
+az aks show -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME --query "networkProfile.vnetSubnetId" -o tsv
+
+az aks update -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME --enable-oidc-issuer --enable-workload-identity --no-wait
+az aks show -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME --query "oidcIssuerProfile.issuerUrl" -o tsv
+# aks 에 kube-system/azure-wi-webhook-webhook-service 서비스가 생성됨
+## 여기서 에러 발생
+# Could not find service principal or user assigned MSI for roleassignment
+# keyvaultid: None, enable_kv: None
+# 해결책 : no-wait 옵션 없이 재실행해보자
+
+
+
+# NOTE: workload identity 를 사용하려면 OIDC 발급자와 Workload Identity 기능이 모두 활성화 되어 있어야 함.
+
+
+# Check if the AKS cluster use workload identity
+az aks show -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME --query "workloadIdentity"
+# Check if the AKS cluster use OIDC issuer
+az aks show -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME --query "oidcIssuerProfile"
+# Check if the AKS cluster use RBAC authorization mode
+az aks show -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME --query "enableRbac"
+# Check if the AKS cluster use managed identity
+az aks show -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME --query "enableManagedIdentity"
+
+# az aks show -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME --query "identity"
+
+
+# NOTE: 아래 Scope 에서 지정한 RESOURCE_GROUP 을 RESOURCE_GROUP 으로 변경했음.
+AKS_MANAGED_ID=$(az aks show -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME --query "identity.principalId" -o tsv)
+az role assignment create --assignee $AKS_MANAGED_ID --role "Network Contributor" --scope /subscriptions/$SUBSCRIPTION/resourceGroups/$RESOURCE_GROUP
+az role assignment list --assignee $AKS_MANAGED_ID --scope /subscriptions/$SUBSCRIPTION/resourceGroups/$RESOURCE_GROUP
+
+########################################################
+# NOTE : AKS 에 설치되는 ALB Controller 가 Azure Resource 에 접근하기 위해 필요한 설정"
+# 2. ALB 컨트롤러 Pod 가 사용할 User Managed Identity 를 생성.
+# 3. ALB 컨트롤러 Pod 의 SA (service account) 와 OIDC Issuer, User Managed Identity 를 Federation 함.
+# 4. 이렇게 하면 ALB 컨트롤러 Pod 는 OIDC Issurer 를 통해 인증 받은 후, 해당 User Managed Identity 를 사용할 수 있게 되며 이를 통해 Azure 리소스에 접근 가능해짐.
+# Source : https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/quickstart-deploy-application-gateway-for-containers-alb-controller?tabs=install-helm-windows
+########################################################
+IDENTITY_RESOURCE_NAME='azure-alb-identity'$VnetIndex$ClusterIndex
+FD_NAME='azure-alb-identity-fd'$VnetIndex$ClusterIndex
+
+mcResourceGroup=$(az aks show --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME --query "nodeResourceGroup" -o tsv)
+mcResourceGroupId=$(az group show --name $mcResourceGroup --query id -o tsv)
+
+echo "Creating identity $IDENTITY_RESOURCE_NAME in resource group $RESOURCE_GROUP"
+az identity create --resource-group $RESOURCE_GROUP --name $IDENTITY_RESOURCE_NAME
+principalId="$(az identity show -g $RESOURCE_GROUP -n $IDENTITY_RESOURCE_NAME --query principalId -o tsv)"
+
+echo "Waiting 60 seconds to allow for replication of the identity..."
+sleep 60
+
+echo "Apply Reader role to the AKS managed cluster resource group for the newly provisioned identity"
+az role assignment create --assignee-object-id $principalId --assignee-principal-type ServicePrincipal --scope $mcResourceGroupId --role "acdd72a7-3385-48ef-bd42-f606fba81ae7" # Reader role
+
+echo "Set up federation with AKS OIDC issuer"
+AKS_OIDC_ISSUER="$(az aks show -n "$AKS_CLUSTER_NAME" -g "$RESOURCE_GROUP" --query "oidcIssuerProfile.issuerUrl" -o tsv)"
+# NOTE : NAMESPACE 는 alb controller 의 azure-alb-system 임.
+az identity federated-credential create --name "$FD_NAME" --identity-name "$IDENTITY_RESOURCE_NAME" --resource-group $RESOURCE_GROUP --issuer "$AKS_OIDC_ISSUER" --subject "system:serviceaccount:azure-alb-system:alb-controller-sa"
+
+az identity federated-credential list --identity-name "$IDENTITY_RESOURCE_NAME" --resource-group $RESOURCE_GROUP
+# az identity federated-credential delete --name FD_NAME --identity-name "$IDENTITY_RESOURCE_NAME" --resource-group $RESOURCE_GROUP
+
+
+
+########################################################
+# ALB Controller 설치하기
+# 4. helm chart 로 설치
+########################################################
+kubectl create namespace helm-ns
+HELM_NAMESPACE='helm-ns'
+CONTROLLER_NAMESPACE='azure-alb-system'
+az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME
+helm install alb-controller oci://mcr.microsoft.com/application-lb/charts/alb-controller --namespace $HELM_NAMESPACE --version 1.0.2 --set albController.namespace=$CONTROLLER_NAMESPACE --set albController.podIdentity.clientID=$(az identity show -g $RESOURCE_GROUP -n $IDENTITY_RESOURCE_NAME --query clientId -o tsv)
+# helm uninstall alb-controller --namespace $HELM_NAMESPACE
+
+# alb 컨트롤러 설치확인
+kubectl get pods -n $CONTROLLER_NAMESPACE
+
+# GatewayClass에 Valid GatewayClass라는 조건이 있는지 확인해야 합니다. 
+# 이는 기본 GatewayClass가 설정되었으며 이 GatewayClass를 참조하는 모든 게이트웨이 리소스가 ALB 컨트롤러에 의해 자동으로 관리됨을 나타냅니다.
+kubectl get gatewayclass azure-alb-external -o yaml
+
+
+# 여기까지가 ALB Controller 설치 과정임.
+
+
+########################################################
+# 5. Azure 에서 Application Gateway for Containers 배포하기
+# - https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/quickstart-create-application-gateway-for-containers-managed-by-alb-controller?tabs=new-subnet-aks-vnet
+# - kubernetes 에 배포된 ALB Controller는 Application Gateway for containers 리소스 및 해당 하위 리소스의 수명주기를 관리함.
+# - ALB Controller는 Cluster 에 ALB CR (Custome Resource) 이 정의되면 Application Gateway for containers 리소스를 생성함.
+########################################################
+# TODO 
+# Prepare your virtual network / subnet for Application Gateway for Containers
+VNET_NAME='dustinVnet_ap'$VnetIndex
+
+
+# 리소스 그룹의 모든 vnet 확인
+az network vnet list
+az network vnet list -g $RESOURCE_GROUP -o table
+
+# # Network Security Group 생성
+# LOCATION='koreacentral'
+# NSG9='ALB-dustinSvc-NSG9'$VnetIndex$ClusterIndex
+# az network nsg create --resource-group $RESOURCE_GROUP --name $NSG8 --location $LOCATION # NSG for ALB
+
+
+# # AGFC 를 위한 서브넷 생성 - Create Subnet for Application Gateway for Containers
+# SUBNET_ADDRESS_PREFIX='10.30.8.0/24'
+# ALB_SUBNET_NAME='subnet-alb-dustinsvc'$VnetIndex$ClusterIndex # subnet name can be any non-reserved subnet name (i.e. GatewaySubnet, AzureFirewallSubnet, AzureBastionSubnet would all be invalid)
+# az network vnet subnet create \
+#   --resource-group $RESOURCE_GROUP \
+#   --vnet-name $VNET_NAME \
+#   --name $ALB_SUBNET_NAME \
+#   --address-prefixes $SUBNET_ADDRESS_PREFIX \
+#   --network-security-group $NSG8\
+#   --delegations 'Microsoft.ServiceNetworking/trafficControllers'
+
+
+# AGFC 를 위한 서브넷 ID 가져오기
+PRIV_SUB_NET3='PrivateSubnet3'$VnetIndex$ClusterIndex
+ALB_SUBNET_NAME=$PRIV_SUB_NET3 # agfc subnet
+NSG3='dustinNSG3'$VnetIndex$ClusterIndex # NSG3 for AGFC
+
+ALB_SUBNET_ID=$(az network vnet subnet show --name $ALB_SUBNET_NAME --resource-group $RESOURCE_GROUP --vnet-name $VNET_NAME --query '[id]' --output tsv)
+
+# 기존 서브넷에 네트워크 보안 그룹 연결 및 delegations 옵션 추가
+az network vnet subnet update \
+  --id $ALB_SUBNET_ID \
+  --network-security-group $NSG3 \
+  --delegations 'Microsoft.ServiceNetworking/trafficControllers'
+
+# AGC 에 의해서 사용 될 Manged Identity 에 필요 권한을 부여
+# -- AKS 클러스터의 노드 리소스 그룹(mcResourceGroupId) 범위 내에서 관리 ID(principalId)에 "AppGw for Containers Configuration Manager" 역할을 부여합니다. 이 역할을 통해 AGC 서비스는 AKS 클러스터의 노드 리소스 구성을 관리할 수 있습니다.
+# -- AGC 서비스가 배포될 서브넷(ALB_SUBNET_ID) 범위 내에서 관리 ID(principalId)에 "Network Contributor" 역할을 부여합니다. 이 역할을 통해 AGC 서비스는 해당 서브넷 내의 네트워크 리소스를 관리할 수 있습니다
+# IDENTITY_RESOURCE_NAME='azure-agfc-identity' # AGC 서비스에서 사용할 관리 ID 리소스의 이름
+IDENTITY_RESOURCE_NAME='azure-alb-identity'$VnetIndex$ClusterIndex
+MC_RESOURCE_GROUP=$(az aks show --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP --query "nodeResourceGroup" -otsv | tr -d '\r')
+mcResourceGroupId=$(az group show --name $MC_RESOURCE_GROUP --query id -o tsv)
+principalId=$(az identity show -g $RESOURCE_GROUP -n $IDENTITY_RESOURCE_NAME --query principalId -o tsv) # Managed ID 의 고유 식별자 = principalId
+
+# "Delegate AppGw for Containers Configuration Manager role to AKS Managed Cluster RG"
+# -- role "fbc52c3f-28ad-4303-a892-8a056630b8f1" 은 Azure에서 "AppGw for Containers Configuration Manager" 역할의 역할 ID
+# 이 역할은 Application Gateway for Containers 서비스가 AKS 클러스터의 노드 리소스 그룹에서 다음과 같은 작업을 수행할 수 있도록 허용합니다:
+# 노드 리소스 그룹의 리소스 읽기
+# 노드 리소스 그룹의 리소스 쓰기
+# 노드 리소스 그룹의 리소스 삭제
+# 노드 리소스 그룹의 리소스 이동
+# 이를 통해 Application Gateway for Containers 서비스는 AKS 클러스터의 노드 리소스를 관리하고 구성할 수 있습니다. 예를 들어, 노드 풀 크기 조정, 노드 업그레이드, 노드 라벨 수정 등의 작업을 수행할 수 있습니다.
+# 따라서 이 역할은 Application Gateway for Containers 서비스가 AKS 클러스터의 노드 리소스를 적절히 관리하고 구성할 수 있도록 필요한 최소 권한을 부여합니다.
+az role assignment create --assignee-object-id $principalId --assignee-principal-type ServicePrincipal --scope $mcResourceGroupId --role "fbc52c3f-28ad-4303-a892-8a056630b8f1"
+az role assignment list --assignee $principalId --scope $mcResourceGroupId
+# "Delegate Network Contributor permission for join to association subnet"
+# -- role "4d97b98b-1d4f-4787-a291-c67834d212e7" 은 Azure에서 "Network Contributor" 역할의 역할 ID
+# Network Contributor 역할은 네트워크 리소스를 관리할 수 있는 권한을 부여합니다. 이 역할을 할당받은 주체(이 경우 Application Gateway for Containers 서비스의 관리 ID)는 다음과 같은 작업을 수행할 수 있습니다:
+# 가상 네트워크 생성 및 관리
+# 네트워크 보안 그룹 생성 및 관리
+# 공용 IP 주소 생성 및 관리
+# 부하 분산 장치 생성 및 관리
+# 네트워크 인터페이스 생성 및 관리
+# 라우팅 테이블 생성 및 관리
+# 이 역할은 Application Gateway for Containers 서비스가 배포될 서브넷에서 필요한 네트워크 리소스를 프로비저닝하고 구성할 수 있도록 합니다. 예를 들어, 서비스에 필요한 가상 네트워크, 서브넷, 네트워크 보안 그룹, 공용 IP 주소 등을 생성하고 관리할 수 있습니다.
+# 따라서 이 역할은 Application Gateway for Containers 서비스가 네트워크 인프라를 적절히 구성하고 관리할 수 있도록 필요한 권한을 부여합니다.
+az role assignment create --assignee-object-id $principalId --assignee-principal-type ServicePrincipal --scope $ALB_SUBNET_ID --role "4d97b98b-1d4f-4787-a291-c67834d212e7"
+az role assignment list --assignee $principalId --scope $ALB_SUBNET_ID
+
+########################################################
+# 5. Application Gateway for Containers (AGC) Resource 및 Association (연결) 생성
+########################################################
+
+# ALB 리소스에 대한 Namespace 생성
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: alb-test-infra
+EOF
+
+
+
+# AGFC 생성 및 Association 생성 (AGFC 생성하는 명령)
+kubectl apply -f - <<EOF
+apiVersion: alb.networking.azure.io/v1
+kind: ApplicationLoadBalancer
+metadata:
+  name: alb-test
+  namespace: alb-test-infra
+spec:
+  associations:
+  - $ALB_SUBNET_ID
+EOF
+
+# NGIX SVC, Deployment 생성
+# 출처 : https://github.com/JACKsHOT12/JacksCloud/blob/main/Gateway%20and%20HTTp%20route%20config%201.txt
+# kubectl apply -f ./yaml/deployment.yaml
+
+# Gateway 리소스 정의
+# NOTE: 아래 코드 실행하기 전에 ALB-ID 값은 콘솔에서 확인해서 아래 annotation 에 교체해야 한다. 아래 코드를 실행해도 azure console 상에서 생성되지 않는다. 매뉴얼로 frontend 를 콘솔에서 생성한다. 
+# NOTE: 아래 namespace from 값이 All 이지만, 다른 namespace 에 생성된 service 로 트래픽 라우팅이 되지 않고 있다.
+# NOTE: service 오브젝트의 namespace 가 일단 gateway 와 동일 namespace 에 생성되어야 한다.
+kubectl apply -f - <<EOF
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: alb-test-gateway
+  namespace: alb-test-infra
+  annotations: 
+    alb.networking.azure.io/alb-id: '/subscriptions/4a14435c-14b8-42fa-99b5-3d513b52fc23/resourceGroups/mc_dustinvnetv01_dustinaks-cluster-apv01c01_koreacentral/providers/Microsoft.ServiceNetworking/trafficControllers/alb-3c0301e4'
+spec:
+  gatewayClassName: azure-alb-external
+  listeners:
+    - name: http
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: All
+  addresses:
+  - type: alb.networking.azure.io/alb-frontend
+    value: agfc-frontend
+EOF
+
+# HTTPRouter 리소스 정의
+kubectl apply -f - <<EOF
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: alb-test-httprouter
+  namespace: alb-test-infra
+spec:
+  parentRefs:
+  - name: alb-test-gateway
+  rules:
+  - backendRefs:
+    - name: nginx-v1-svc
+      port: 8080
+EOF
+
+
+
+
+
+# ApplicationLoadBalancer 리소스의 상태를 확인
+kubectl get applicationloadbalancer alb-test -n alb-test-infra -o yaml
+
+########################################################
+# 여기까지 클러스터에 ALB 컨트롤러를 설치하고 Azure에 Application Gateway for Containers 를 배포작업 완료함.
+########################################################
+
+
+
+
+########################################################
+# 부하분산 설정하기
+########################################################
+# https://learn.microsoft.com/en-us/azure/application-gateway/for-containers/how-to-traffic-splitting-gateway-api?tabs=alb-managed
+
+
+########################################################
+# 참고
+########################################################
+
+# @TODO: 아래 내용도 고려해보길 바람.
+# 1. Gateway 리소스 생성
+# apiVersion: applicationgateway.networking.k8s.io/v1
+# kind: Gateway
+# metadata:
+#   name: alb-test-gateway
+#   namespace: alb-test-infra
+# spec:
+#   gatewayClassName: azure-alb-external
+#   type: Public
+#   listeners:
+#   - name: http
+#     port: 80
+#     protocol: HTTP
+#   routes:
+#   - name: default
+#     http:
+#       paths:
+#         - pathType: Prefix
+#           value: /
+#           backend:
+#             service:
+#               name: my-service
+#               port:
+#                 number: 80
+#   defaultBackendService:
+#     service:
+#       name: default-backend
+#       port:
+#         number: 80
+#   frontendIPConfigurations:
+#   - name: public-ip
+#     publicIPAddress:
+#       id: /subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/publicIPAddresses/<publicIpName>
+#   # sslCertificates 및 trustedRootCertificates 섹션은 필요한 경우 추가
+
+az network alb list --resource-group mc_dustinaksrg01_dustinaks-cluster-ap01_koreacentral --subscription 4a14435c-14b8-42fa-99b5-3d513b52fc23
+az network alb show --resource-group mc_dustinaksrg01_dustinaks-cluster-ap01_koreacentral --name alb-8583be1a --subscription 4a14435c-14b8-42fa-99b5-3d513b52fc23
+az network alb association list --resource-group mc_dustinaksrg01_dustinaks-cluster-ap01_koreacentral --alb-name alb-8583be1a --subscription 4a14435c-14b8-42fa-99b5-3d513b52fc23
+az network alb frontend list --resource-group mc_dustinaksrg01_dustinaks-cluster-ap01_koreacentral --alb-name alb-8583be1a --subscription 4a14435c-14b8-42fa-99b5-3d513b52fc23
+az network alb delete --resource-group mc_dustinaksrg01_dustinaks-cluster-ap01_koreacentral --name alb-8583be1a --subscription 4a14435c-14b8-42fa-99b5-3d513b52fc23
