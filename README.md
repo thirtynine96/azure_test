@@ -60,7 +60,7 @@ az account show --query id --output tsv
 #### 구독 지정
 
 ```
-SUBSCRIPTION='xxxxxxxxxxxxxxx' # multicloud enabling
+SUBSCRIPTION=$(az account show --query id --output tsv)
 az account set -s $SUBSCRIPTION
 ```
 
@@ -289,7 +289,7 @@ az acr import --name $ACR_NAME --source docker.io/library/nginx:latest --image n
 ```
 RESOURCE_GROUP='01_dustinAksRg'$ClusterIndex
 AKS_CLUSTER_NAME='dustinaks-cluster-ap02'$ClusterIndex
-SUBSCRIPTION='4a14435c-14b8-42fa-99b5-3d513b52fc23' # multicloud enabling
+SUBSCRIPTION=$(az account show --query id --output tsv) # multicloud enabling
 VNET_NAME='dustinVnet_ap01'
 SUBNET_NAME_NODE=$PRIV_SUB_NET1
 SUBNET_NAME_POD=$PRIV_SUB_NET2

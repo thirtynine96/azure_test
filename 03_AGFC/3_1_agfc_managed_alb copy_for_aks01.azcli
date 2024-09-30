@@ -302,7 +302,7 @@ metadata:
   name: alb-test-gateway
   namespace: alb-test-infra
   annotations: 
-    alb.networking.azure.io/alb-id: '/subscriptions/4a14435c-14b8-42fa-99b5-3d513b52fc23/resourceGroups/mc_dustinvnetv01_dustinaks-cluster-apv01c01_koreacentral/providers/Microsoft.ServiceNetworking/trafficControllers/alb-3c0301e4'
+    alb.networking.azure.io/alb-id: '/subscriptions/$SUBSCRIPTION/resourceGroups/mc_dustinvnetv01_dustinaks-cluster-apv01c01_koreacentral/providers/Microsoft.ServiceNetworking/trafficControllers/alb-3c0301e4'
 spec:
   gatewayClassName: azure-alb-external
   listeners:
@@ -393,8 +393,8 @@ kubectl get applicationloadbalancer alb-test -n alb-test-infra -o yaml
 #       id: /subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/publicIPAddresses/<publicIpName>
 #   # sslCertificates 및 trustedRootCertificates 섹션은 필요한 경우 추가
 
-az network alb list --resource-group mc_dustinaksrg01_dustinaks-cluster-ap01_koreacentral --subscription 4a14435c-14b8-42fa-99b5-3d513b52fc23
-az network alb show --resource-group mc_dustinaksrg01_dustinaks-cluster-ap01_koreacentral --name alb-8583be1a --subscription 4a14435c-14b8-42fa-99b5-3d513b52fc23
-az network alb association list --resource-group mc_dustinaksrg01_dustinaks-cluster-ap01_koreacentral --alb-name alb-8583be1a --subscription 4a14435c-14b8-42fa-99b5-3d513b52fc23
-az network alb frontend list --resource-group mc_dustinaksrg01_dustinaks-cluster-ap01_koreacentral --alb-name alb-8583be1a --subscription 4a14435c-14b8-42fa-99b5-3d513b52fc23
-az network alb delete --resource-group mc_dustinaksrg01_dustinaks-cluster-ap01_koreacentral --name alb-8583be1a --subscription 4a14435c-14b8-42fa-99b5-3d513b52fc23
+az network alb list --resource-group mc_dustinaksrg01_dustinaks-cluster-ap01_koreacentral --subscription $SUBSCRIPTION
+az network alb show --resource-group mc_dustinaksrg01_dustinaks-cluster-ap01_koreacentral --name alb-8583be1a --subscription $SUBSCRIPTION
+az network alb association list --resource-group mc_dustinaksrg01_dustinaks-cluster-ap01_koreacentral --alb-name alb-8583be1a --subscription $SUBSCRIPTION
+az network alb frontend list --resource-group mc_dustinaksrg01_dustinaks-cluster-ap01_koreacentral --alb-name alb-8583be1a --subscription $SUBSCRIPTION
+az network alb delete --resource-group mc_dustinaksrg01_dustinaks-cluster-ap01_koreacentral --name alb-8583be1a --subscription $SUBSCRIPTION

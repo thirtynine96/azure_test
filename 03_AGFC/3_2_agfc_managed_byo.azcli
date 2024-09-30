@@ -85,7 +85,8 @@ az aks show -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME --query "enableManagedIdenti
 
 
 AKS_IDENTITY=$(az aks show -g $RESOURCE_GROUP -n $AKS_CLUSTER_NAME --query "identity.principalId" -o tsv)
-SUBSCRIPTION_ID='4a14435c-14b8-42fa-99b5-3d513b52fc23' # multicloud enabling
+SUBSCRIPTION=$(az account show --query id --output tsv)
+
 az role assignment create --assignee $AKS_IDENTITY --role "Network Contributor" --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP
 
 ########################################################
@@ -236,7 +237,7 @@ metadata:
   name: alb-test-gateway
   namespace: alb-test-infra
   annotations:
-    alb.networking.azure.io/alb-id: '/subscriptions/4a14435c-14b8-42fa-99b5-3d513b52fc23/resourceGroups/01-dustinAksRg-cl02/providers/Microsoft.ServiceNetworking/trafficControllers/dustin-agfc-test'
+    alb.networking.azure.io/alb-id: '/subscriptions/$SUBSCRIPTION/resourceGroups/01-dustinAksRg-cl02/providers/Microsoft.ServiceNetworking/trafficControllers/dustin-agfc-test'
 spec:
   gatewayClassName: azure-alb-external
   listeners:
